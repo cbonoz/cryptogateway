@@ -21,6 +21,10 @@ body {
     margin-bottom: 50px;
 }
 
+.article-content {
+    line-height: 20px;
+}
+
 .wallet-button {
     margin: 20px;
 }

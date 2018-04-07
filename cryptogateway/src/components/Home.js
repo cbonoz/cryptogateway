@@ -9,8 +9,6 @@ import businessLogo from '../assets/your_business.png';
 import api from '../helpers/api';
 import WallAnimation from "./WallAnimation";
 
-const MAX_BLOCKS = 15;
-
 const Home = createReactClass({
 
     componentWillMount() {
@@ -49,7 +47,7 @@ const Home = createReactClass({
                         {/*<WallAnimation/>*/}
                     </Col>
                     <Col xs={12} md={2}>
-                        {/*<img src={businessLogo} className="business-logo"/>*/}
+                        <img src={businessLogo} className="business-logo"/>
                     </Col>
                     <Col xs={0} md={1}>
                     </Col>
