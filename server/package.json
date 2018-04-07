@@ -15,6 +15,7 @@
   "author": "Chris Buonocore",
   "license": "ISC",
   "dependencies": {
+    "hapi": "^17.3.1",
     "lotion": "^0.1.17"
   }
 }
