@@ -1,26 +1,31 @@
 'use strict';
 
 const Hapi = require('hapi');
+const coin = require('./coin/coin');
+const client = coin.client();
+
+const CLIENT_PORT = 3232;
 
 const server = Hapi.server({
-    host:'localhost',
-    port:8000
+    host: 'localhost',
+    port: 8000
 });
 
 const COOKIE_KEY = 'cgpayment';
+const ALLOWED_VIEWS = 3;
 
 // ---------------------------------
 // Blockchain interaction functions
 // ---------------------------------
 
 function generateNewAddress() {
-  // TODO generate a new address and return it
-  return 0;
+    // TODO generate a new address and return it
+    return 0;
 }
 
 function hasBalance(address, requiredBalance) {
-  // TODO check if the address has (at least) the required balance, return boolean
-  return false;
+    // TODO check if the address has (at least) the required balance, return boolean
+    return false;
 }
 
 // ---------
@@ -31,7 +36,7 @@ function hasBalance(address, requiredBalance) {
 // The cookie will store the payment address we generated for this browser
 server.state(COOKIE_KEY, {
     ttl: null, // can be millisec, this is per-session for easy testing
-    //isSecure: true, // Makes the cookie HTTPS only - enable in production
+    //isSecure: true, // TODO: Makes the cookie HTTPS only - enable in production
     isSecure: false,
     isHttpOnly: true,
     encoding: 'base64json',
@@ -41,32 +46,37 @@ server.state(COOKIE_KEY, {
 
 // Add our validate pay API route
 server.route({
-    method:'GET',
-    path:'/validate-pay/{amount?}',
-    handler:function(request, h) {
+    method: 'GET',
+    path: '/validate-pay/{amount?}',
+    handler: function (request, h) {
 
-      // Receive required amount as a parameter
-      let amount = request.params.amount;
-      if (!amount)
-        return h.response("Invalid request, please specify amount").code(400);
+        // Receive required amount as a parameter
+        const amount = request.params.amount;
+        if (!amount) {
+            return h.response("Invalid request, please specify amount").code(400);
+        }
 
-      // If no cookie exists, create a blockchain address, return it to the caller, and set it as the cookie
+        // If no cookie exists, create a blockchain address, return it to the caller, and set it as the cookie
+        const cookieVal = request.state[COOKIE_KEY];
 
-      const cookieVal = request.state[COOKIE_KEY];
-      if (!cookieVal) {
-        let paymentAddress = generateNewAddress();
-        let payload = { sendPaymentTo: paymentAddress };
-        return h.response(payload).code(403).state(COOKIE_KEY, payload);
-      }
-      else {
+        // no cookie present or generated yet.
+        let payload;
+        if (!cookieVal) {
+            const paymentAddress = generateNewAddress();
+            payload = {sendPaymentTo: paymentAddress, viewCount: 0};
+        } else {
+            payload = cookieVal;
+        }
+
         // Note that we don't validate cookie structure for now...
-        let payload = cookieVal;
-        if (hasBalance(payload.sendPaymentTo, amount))
-          return h.response("Okay");
-        else
-          // For now the client can't tell if the address is new or not. We can change this if needed
-          return h.response(payload).code(403).state(COOKIE_KEY, payload);
-      }
+        payload.viewCount += 1;
+        if (hasBalance(payload.sendPaymentTo, amount) || payload.viewCount <= ALLOWED_VIEWS) {
+            return h.response("Authorized").code(200).state(COOKIE_KEY, payload);
+        } else {
+            // Else not authorized.
+            // For now the client can't tell if the address is new or not. We can change this if needed
+            return h.response(payload).code(403).state(COOKIE_KEY, payload);
+        }
     }
 });
 

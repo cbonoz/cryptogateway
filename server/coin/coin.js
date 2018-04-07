@@ -2,11 +2,11 @@
  * Created by cbuonocore on 4/6/18.
  */
 
-let secp256k1 = require('secp256k1')
-let {randomBytes} = require('crypto')
-let createHash = require('sha.js')
-let vstruct = require('varstruct')
-let axios = require('axios')
+let secp256k1 = require('secp256k1');
+let {randomBytes} = require('crypto');
+let createHash = require('sha.js');
+let vstruct = require('varstruct');
+let axios = require('axios');
 
 let TxStruct = vstruct([
     {name: 'amount', type: vstruct.UInt64BE},
@@ -14,7 +14,7 @@ let TxStruct = vstruct([
     {name: 'senderAddress', type: vstruct.Buffer(32)},
     {name: 'receiverAddress', type: vstruct.Buffer(32)},
     {name: 'nonce', type: vstruct.UInt32BE}
-])
+]);
 
 exports.handler = function (state, rawTx) {
     let tx = deserializeTx(rawTx)
@@ -43,8 +43,8 @@ exports.handler = function (state, rawTx) {
     senderBalance -= tx.amount
     receiverBalance += tx.amount
 
-    state.balances[senderAddress] = senderBalance
-    state.balances[receiverAddress] = receiverBalance
+    state.balances[senderAddress] = senderBalance;
+    state.balances[receiverAddress] = receiverBalance;
     state.nonces[senderAddress] = (state.nonces[senderAddress] || 0) + 1
 }
 
@@ -113,10 +113,19 @@ function deriveAddress(pubKey) {
         .digest()
 }
 
+const OWNER_PRIVATE_KEY = process.env.GATE_COIN_PRIVATE_KEY;
+const OWNER_PUBLIC_KEY = process.env.GATE_COIN_PUBLIC_KEY;
+const OWNER_ADDRESS = process.env.GATE_COIN_ADDRESS;
+
+
 exports.client = function (url = 'http://localhost:3232') {
     let methods = {
+        grantInitialBalance: async () => {
+            let state = await axios.get(url + '/state').then(res => res.data)
+
+        },
         generatePrivateKey: () => {
-            let privKey
+            let privKey;
             do {
                 privKey = randomBytes(32)
             } while (!secp256k1.privateKeyVerify(privKey))
