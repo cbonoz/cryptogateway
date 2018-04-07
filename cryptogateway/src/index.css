@@ -21,6 +21,10 @@ body {
     margin-bottom: 50px;
 }
 
+.wallet-button {
+    margin: 20px;
+}
+
 /*Col 1*/
 .file-uploader {
     background: white;

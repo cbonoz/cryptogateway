@@ -8,6 +8,7 @@ const library = (function () {
     const BASE_URL = `http://localhost:${PORT}`;
 
     const axios = require('axios');
+
     //
     // function getFileMetadatasForAddress(address) {
     //     const url = `${BASE_URL}/api/files/${address}`;

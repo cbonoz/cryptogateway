@@ -1,34 +1,75 @@
 import React from 'react';
 import createReactClass from 'create-react-class';
 import {Button, Modal, OverlayTrigger, Popover, Tooltip} from "react-bootstrap";
-import api from '../helpers/api';
+import Footer from "./Footer";
+
+const BASE_URL = "http://localhost:8000";
+const DEFAULT_BLUR = 5;
 
 const Paywall = createReactClass({
 
     componentWillMount() {
-        // this.handleShow = this.handleShow.bind(this);
-        // this.handleClose = this.handleClose.bind(this);
-
         this.setState({
-            show: false
+            showModal: false,
+            blur: true,
+            sendPaymentTo: null,
         });
 
-        // api.get
+        const excludedUrls = this.props.excludedUrls || [];
+        console.log(window.location.pathname, excludedUrls);
+        if (!excludedUrls.includes(window.location.pathname)) {
+            this.setState({authInterval: setInterval(this.checkAuth, this.props.authInterval || 100000)});
+            this.checkAuth();
+        }
     },
 
-    componentDidMount() {
+    checkAuth() {
+        const self = this;
+        // units in satoshi.
+        const amount = self.props.amount || 500;
+        const amountUnits = self.props.amountUnits || "Satoshi";
+        const url = `${BASE_URL}/validate-pay/${amount}`;
+        console.log('checkAuth', url);
 
+        fetch(url).then(function (response) {
+            return response.json();
+        }).then(function (res) {
+            console.log('validate success', res);
+            // Ok to proceed (remove the blur).
+            self.handleClose();
+        }).catch((err) => {
+            console.error('validate failure', err);
+            const status = err.response ? err.response.status : 500;
+            const data = err.response ? err.response.data : {'sendPaymentTo': '<FAKE ADDRESS>'};
+            console.log('status', status);
+            switch (status) {
+                case 500:
+                case 404:
+                case 400:
+                case 403:
+                    // Error from payment server, show the dialog.
+                    const sendPaymentTo = data['sendPaymentTo'];
+                    self.setState({sendPaymentTo: sendPaymentTo});
+                    setTimeout(self.handleShow, 1000);
+                    break;
+                default:
+                    // Close the dialog.
+                    self.handleClose();
+                    break;
+            }
+        });
     },
 
     handleClose() {
-        this.setState({ show: false });
+        this.setState({blur: 0, showModal: false})
     },
 
     handleShow() {
-        this.setState({ show: true });
+        this.setState({blur: this.props.blur || DEFAULT_BLUR, showModal: true})
     },
 
     render() {
+        const self = this;
         const popover = (
             <Popover id="modal-popover" title="popover">
                 very popover. such engagement
@@ -36,93 +77,58 @@ const Paywall = createReactClass({
         );
         const tooltip = <Tooltip id="modal-tooltip">wow.</Tooltip>;
 
+        const blur = this.state.blur;
+
         return (
             <div>
-                <p>Click to get the full Modal experience!</p>
+                <div style={{WebkitFilter: `blur(${blur}px) saturate(2)`}}>
+                    {this.props.children}
+                </div>
 
-                <Button bsStyle="primary" bsSize="large" onClick={this.handleShow}>
-                    Launch demo modal
-                </Button>
-
-                <Modal show={this.state.show} onHide={this.handleClose}>
-                    <Modal.Header closeButton>
-                        <Modal.Title>Modal heading</Modal.Title>
+                <Modal show={this.state.showModal}
+                  // onHide={this.handleClose}
+                       >
+                    <Modal.Header>
+                        <Modal.Title><b>Producing Quality Content Costs Money.</b></Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
-                        <h4>Text in a modal</h4>
-                        <p>
-                            Duis mollis, est non commodo luctus, nisi erat porttitor ligula.
-                        </p>
 
-                        <h4>Popover in a modal</h4>
-                        <p>
-                            there is a{' '}
-                            <OverlayTrigger overlay={popover}>
-                                <a href="#popover">popover</a>
-                            </OverlayTrigger>{' '}
-                            here
-                        </p>
+                        <p>Support quality journalism - no subscription necessary.</p>
 
-                        <h4>Tooltips in a modal</h4>
-                        <p>
-                            there is a{' '}
-                            <OverlayTrigger overlay={tooltip}>
-                                <a href="#tooltip">tooltip</a>
-                            </OverlayTrigger>{' '}
-                            here
-                        </p>
+                        <p>Send <b>{self.props.amount}</b> {self.props.amountUnits} to address:</p>
+
+                        <h3>{self.state.sendPaymentTo}</h3>
+
+                        <p>to continue reading.</p>
+
+                        <Button bsStyle="success" className="wallet-button" onClick={() => {self.handleClose()}}>Go to Wallet</Button>
 
                         <hr />
 
-                        <h4>Overflowing text to show scroll behavior</h4>
-                        <p>
-                            Cras mattis consectetur purus sit amet fermentum. Cras justo odio,
-                            dapibus ac facilisis in, egestas eget quam. Morbi leo risus, porta
-                            ac consectetur ac, vestibulum at eros.
-                        </p>
-                        <p>
-                            Praesent commodo cursus magna, vel scelerisque nisl consectetur
-                            et. Vivamus sagittis lacus vel augue laoreet rutrum faucibus dolor
-                            auctor.
-                        </p>
-                        <p>
-                            Aenean lacinia bibendum nulla sed consectetur. Praesent commodo
-                            cursus magna, vel scelerisque nisl consectetur et. Donec sed odio
-                            dui. Donec ullamcorper nulla non metus auctor fringilla.
-                        </p>
-                        <p>
-                            Cras mattis consectetur purus sit amet fermentum. Cras justo odio,
-                            dapibus ac facilisis in, egestas eget quam. Morbi leo risus, porta
-                            ac consectetur ac, vestibulum at eros.
-                        </p>
-                        <p>
-                            Praesent commodo cursus magna, vel scelerisque nisl consectetur
-                            et. Vivamus sagittis lacus vel augue laoreet rutrum faucibus dolor
-                            auctor.
-                        </p>
-                        <p>
-                            Aenean lacinia bibendum nulla sed consectetur. Praesent commodo
-                            cursus magna, vel scelerisque nisl consectetur et. Donec sed odio
-                            dui. Donec ullamcorper nulla non metus auctor fringilla.
-                        </p>
-                        <p>
-                            Cras mattis consectetur purus sit amet fermentum. Cras justo odio,
-                            dapibus ac facilisis in, egestas eget quam. Morbi leo risus, porta
-                            ac consectetur ac, vestibulum at eros.
-                        </p>
-                        <p>
-                            Praesent commodo cursus magna, vel scelerisque nisl consectetur
-                            et. Vivamus sagittis lacus vel augue laoreet rutrum faucibus dolor
-                            auctor.
-                        </p>
-                        <p>
-                            Aenean lacinia bibendum nulla sed consectetur. Praesent commodo
-                            cursus magna, vel scelerisque nisl consectetur et. Donec sed odio
-                            dui. Donec ullamcorper nulla non metus auctor fringilla.
-                        </p>
+                        {/*<h4>Popover in a modal</h4>*/}
+                        {/*<p>*/}
+                            {/*there is a{' '}*/}
+                            {/*<OverlayTrigger overlay={popover}>*/}
+                                {/*<a href="#popover">popover</a>*/}
+                            {/*</OverlayTrigger>{' '}*/}
+                            {/*here*/}
+                        {/*</p>*/}
+
+                        {/*<h4>Tooltips in a modal</h4>*/}
+                        {/*<p>*/}
+                            {/*there is a{' '}*/}
+                            {/*<OverlayTrigger overlay={tooltip}>*/}
+                                {/*<a href="#tooltip">tooltip</a>*/}
+                            {/*</OverlayTrigger>{' '}*/}
+                            {/*here*/}
+                        {/*</p>*/}
+
+
                     </Modal.Body>
                     <Modal.Footer>
-                        <Button onClick={this.handleClose}>Close</Button>
+                        <div>
+                            <p className="centered">Powered by <b>CryptoGateway &copy;2018</b></p>
+                        </div>
                     </Modal.Footer>
                 </Modal>
             </div>

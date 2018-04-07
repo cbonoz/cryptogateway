@@ -4,17 +4,17 @@
 
 import React from 'react';
 import createReactClass from 'create-react-class';
+
 import cosmosLogo from '../assets/cosmos.png'
 
 const Footer = createReactClass({
     render() {
         return (
             <div>
-                <p className="centered footer">Powered by the
+                <p className="centered footer">Powered by
                     <span className="cosmos-green">
                         <img src={cosmosLogo} className="cosmos-logo"/>
-                    </span>
-                    Blockchain</p>
+                    </span>Blockchain</p>
             </div>
         );
     }
