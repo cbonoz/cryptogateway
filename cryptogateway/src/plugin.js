@@ -1,1 +1,0 @@
-../../jsplugin/plugin.js

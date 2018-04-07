@@ -4,7 +4,165 @@ body {
     font-family: sans-serif;
 }
 
+.navbar-default  {
+    /*background-image: none !important;*/
+    background: none !important;
+}
+
+.business-logo {
+    margin-top: 50px;
+}
+
+.wall-animation {
+    /*margin-top: 50px;*/
+}
+
+.banner-area {
+    margin-bottom: 50px;
+}
+
+/*Col 1*/
+.file-uploader {
+    background: white;
+    border-radius: 25px;
+    margin-bottom: 5px;
+    padding: 20px;
+}
+
+/*Col 2*/
+.file-chain {
+    background: white;
+    border-radius: 25px;
+    margin-bottom: 5px;
+    min-height: 400px;
+    padding: 20px;
+}
+
+.no-results {
+    margin: 20px;
+    font-size: 16px;
+    padding: 5px;
+}
+
+.file-detail {
+    overflow: hidden;
+}
+
+.create-button {
+    margin: 15px;
+}
+
+.form-control {
+    padding: 15px;
+    width: 500px;
+    max-width: 90%;
+    text-align: center;
+    margin: 0 auto;
+    margin-top: 20px;
+}
+
+.search-button {
+    padding-left: 15px;
+    padding-right: 15px;
+    margin: 20px;
+}
+
+.about-section {
+    max-width: 800px !important;
+    line-height: 28px;
+    font-size: 20px;
+}
+
+.about-page .files-page{
+    padding: 20px;
+}
+
+.about-page h1 {
+    padding: 20px;
+}
+
+.header-text-h2 {
+    font-size: 20px;
+
+}
+
+.header-text-h3 {
+    font-size: 16px;
+
+}
+
+.navbar-nav>li>a {
+    /*border-bottom: 2px solid blue;*/
+    background: transparent !important;
+    /*color: white !important;*/
+    font-weight: bolder;
+}
+
+.navbar-brand {
+    color: black !important;
+}
+
+.header-bar-logo {
+    height: 50px;
+}
+
+/*Custom CSS files below*/
+
+.App {
+    min-height: 100vh;
+    height: 100%;
+    /*background: linear-gradient(90deg, #efd5ff 0%, #515ada 100%);*/
+    background: rgb(174,195,238);
+    background: linear-gradient(276deg, rgba(174,195,238,1) 0%, rgba(68,59,129,0.2903536414565826) 22%);
+    /*background: linear-gradient(90deg, #e3ffe7 0%, #d9e7ff 100%);*/
+}
+
+.file-block {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    padding: 10px;
+    margin: 10px;
+    text-align: start;
+    background: #e6eeee;
+    cursor: pointer;
+}
+
+.access-text {
+    padding: 20px;
+    color: green;
+}
+
+.file-block:hover {
+    background: #cde4ee;
+
+}
+
+.cosmos-logo {
+    width: 60px;
+    margin-left: 10px;
+    margin-right: 10px;
+    margin-bottom: 5px;
+}
+
 .centered {
     margin: 0 auto;
-    text-align: center;
+    vertical-align: center;
 }
+
+.header-logo {
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+    border-bottom: 1px solid black;
+    width: 250px;
+}
+
+.modal-body {
+    font-size: 14px;
+}
+
+.footer {
+    margin-top: 100px;
+    padding-bottom: 50px;
+}
+
