@@ -27,15 +27,10 @@ const ALLOWED_VIEWS = 3;
 // Blockchain interaction functions
 // ---------------------------------
 
-function generateNewAddress() {
-    // TODO generate a new address and return it
-    return client.generateAddress()
-    return 0;
-}
-
+// Check if the address has (at least) the required balance, return true or false.
 function hasBalance(address, requiredBalance) {
-    // TODO check if the address has (at least) the required balance, return boolean
-    return false;
+    const currentBalance = client.getBalance(address);
+    return currentBalance >= requiredBalance;
 }
 
 // ---------
