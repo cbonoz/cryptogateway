@@ -6,6 +6,15 @@ const client = coin.client();
 
 const CLIENT_PORT = 3232;
 
+const low = require('lowdb');
+const FileSync = require('lowdb/adapters/FileSync');
+const adapter = new FileSync('db.json');
+const db = low(adapter);
+
+// Set some defaults (required if your JSON file is empty)
+// account: {publicKey, privateKey, address}
+db.defaults({ accounts: [] }).write();
+
 const server = Hapi.server({
     host: 'localhost',
     port: 8000
@@ -20,6 +29,7 @@ const ALLOWED_VIEWS = 3;
 
 function generateNewAddress() {
     // TODO generate a new address and return it
+    return client.generateAddress()
     return 0;
 }
 
@@ -62,8 +72,12 @@ server.route({
         // no cookie present or generated yet.
         let payload;
         if (!cookieVal) {
-            const paymentAddress = generateNewAddress();
+            const privateKey = client.generatePrivateKey();
+            const publicKey = client.generatePublicKey(privateKey);
+            const paymentAddress = client.generateAddress(publicKey);
             payload = {sendPaymentTo: paymentAddress, viewCount: 0};
+            // Add a new live account to the local db.
+            db.get('accounts').push({ address: paymentAddress, publicKey: publicKey, privateKey: privateKey}).write();
         } else {
             payload = cookieVal;
         }
