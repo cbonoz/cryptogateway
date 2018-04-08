@@ -64,21 +64,20 @@ server.route({
 
         const thisPublisherEntry = sessionData.publishers[publisher];
 
-        const returnError = (errorDesc, err) => {
-            let msg = 'Server - ' + errorDesc + ' ' + JSON.stringify(err);
+        const returnError = (type, publisher, err) => {
+            let msg = `Server - error creating ${type} for publisher ${publisher}: ${JSON.stringify(err)}`;
             console.log(msg);
             return h.response(msg).code(500);
         };
 
         if (!thisPublisherEntry) {
             // First time user sending this, generate a 403.
-            const accountId = publisher;
-            return mybcoin.getAccount(accountId).then((res) => {
+            return mybcoin.getAccount(publisher).then((res) => {
                 if (!res) {
                     // Account does not exist
-                    return mybcoin.createAccount(accountId).then((newAccountId) => {
+                    return mybcoin.createAccount(publisher).then((newAccountId) => {
                         return mybcoin.createAddress(newAccountId).then((paymentAddress) => {
-                            console.log('Server - generated payment address: ', JSON.stringify(paymentAddress));
+                            console.log('Server - generated payment address (for a new account): ', JSON.stringify(paymentAddress));
                             sessionData.publishers[publisher] = {
                                 amount: amount,
                                 address: paymentAddress,
@@ -86,15 +85,15 @@ server.route({
                             };
                             request.yar.set(SESSION_KEY, sessionData);
                             return h.response({sendPaymentTo: paymentAddress, firstVisit: true}).code(403);
-                        }).catch((err) => returnError("error creating address (in a new account)", err));
-                    }).catch((err) => returnError("error creating account", err));
+                        }).catch((err) => returnError("address", publisher, err));
+                    }).catch((err) => returnError("account", publisher, err));
                 } else {
                     // Account already exists - create the new address.
-                    return mybcoin.createAddress(accountId).then((paymentAddress) => {
-                        console.log('back in server', JSON.stringify(paymentAddress));
+                    return mybcoin.createAddress(publisher).then((paymentAddress) => {
+                        console.log('Server - generated payment address: ', JSON.stringify(paymentAddress));
                         payload.sendPaymentTo = paymentAddress;
                         return h.response(payload).code(403).state(COOKIE_KEY, payload);
-                    }).catch((err) => returnError("error creating address", err));
+                    }).catch((err) => returnError("address", publisher, err));
                 }
             });
         } else {

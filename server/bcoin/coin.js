@@ -17,6 +17,8 @@ const library = (function () {
 
     const OWNER_WALLET_ID = 'primaryId';
     const ACCOUNT_TYPE = 'multisig';
+    // TODO: remove
+    const PASSPHRASE = 'passphrase';
 
     const httpWallet = new Wallet({
         network: 'testnet',
@@ -68,7 +70,12 @@ const library = (function () {
     //     "keys": []
     // }
     async function createAccount(accountId) {
-        const options = {type: ACCOUNT_TYPE};
+        const options = {
+            type: ACCOUNT_TYPE,
+            passphrase: PASSPHRASE,
+            witness: 'false',
+            watchOnly: true,
+        };
         const account = await httpWallet.createAccount(accountId, options);
         db.get('accounts').push(account).write();
         console.log(account);
