@@ -9,6 +9,8 @@ const library = (function () {
     const adapter = new FileSync('db.json');
     const db = low(adapter);
 
+    const SATOSHI_PER_BTC = 100000000.0
+
     // Initialize local server db (if needed).
     // OWNER_WALLET_ID: wallet id owned by us - cryptogateway
     //      -> accounts: Customer Company Accounts (ex: forbes.com)
@@ -48,15 +50,14 @@ const library = (function () {
         let history = await getAccountInputHistory(accountId);
         console.log('history', history);
         const transactions = [];
-        history = history.map((walletHistory) => {
-            const inputs = walletHistory.inputs || [];
-            inputs.filter((h) => {
-                return h['address'] === address;
-            });
-        });
         let total = 0;
-        transactions.map((t) => {
-            total += t['value'];
+        history = history.map((walletHistory) => {
+            const ts = walletHistory['outputs'] || [];
+            ts.map((t) => {
+                if(t['address'] === address) {
+                    total += t['value'] / SATOSHI_PER_BTC
+                }
+            });
         });
         console.log('balance', total, requiredBalance, history, accountId);
         requiredBalance = parseFloat(requiredBalance);
@@ -204,6 +205,7 @@ const library = (function () {
         createAccount: createAccount,
         createAddress: createAddress,
         hasBalance: hasBalance,
+        SATOSHI_PER_BTC: SATOSHI_PER_BTC,
         httpWallet: httpWallet,
         db: db
     }

@@ -8,7 +8,7 @@ import {Stage, Layer, Rect, Text} from "react-konva";
 import * as Konva from "konva";
 
 const ANIMATION_INTERVAL = 15000;
-const PARTICLE_SIZE = 40;
+const PARTICLE_SIZE = 30;
 const PARTICLE_INTERVAL = 600;
 const PARTICLE_SPEED = 3;
 
