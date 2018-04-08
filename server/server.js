@@ -94,7 +94,7 @@ server.route({
                 if (!res) {
                     // Account does not exist - create it first, then the address
                     return mybcoin.createAccount(accountId)
-                      .then(() => createAddress(accountId, true));
+                      .then(() => createAddress(accountId, true))
                       .catch((err) => returnError("creating account", err));
                 } else {
                     // Account already exists - create the new address.
