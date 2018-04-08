@@ -114,7 +114,7 @@ const Paywall = createReactClass({
     render() {
         const self = this;
         const popover = (
-            <Popover id="modal-popover" title="popover">
+            <Popover id="modal-popover" title="Payment Address">
                 Get automatic access once payment/transaction confirmed.
             </Popover>
         );
@@ -144,7 +144,7 @@ const Paywall = createReactClass({
                         {self.props.amount > 0 && <div>
                             <p>Send <b>{self.props.amount}</b> {self.props.amountUnits} to address:</p>
                             <OverlayTrigger overlay={popover}>
-                                <h3><b>{self.state.sendPaymentTo}</b></h3>
+                                <h3 className="payment-address"><b>{self.state.sendPaymentTo}</b></h3>
                             </OverlayTrigger>
                             <p>to continue reading.</p>
                         </div>}

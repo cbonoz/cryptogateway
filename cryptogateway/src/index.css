@@ -182,6 +182,10 @@ body {
     width: 400px;
 }
 
+.payment-address {
+    cursor: pointer;
+}
+
 .modal-body {
     font-size: 14px;
 }
