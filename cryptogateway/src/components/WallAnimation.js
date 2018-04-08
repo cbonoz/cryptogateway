@@ -4,10 +4,8 @@
 
 import React from 'react';
 import createReactClass from 'create-react-class';
-import PropTypes from 'prop-types';
 import {Stage, Layer, Rect, Text} from "react-konva";
 import * as Konva from "konva";
-
 
 const ANIMATION_INTERVAL = 15000;
 const PARTICLE_SIZE = 5;

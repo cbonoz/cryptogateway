@@ -9,6 +9,7 @@ const Paywall = createReactClass({
 
     componentWillMount() {
         this.setState({
+            paymentReceived: false,
             showModal: false,
             blur: true,
             sendPaymentTo: null,
@@ -33,9 +34,7 @@ const Paywall = createReactClass({
         const self = this;
         // units in satoshi.
         const amount = self.props.amount || 500;
-        let publisher = self.props.customerDomain || 'www.example.com';
-        publisher = publisher.replace(/\./g, "");
-        const amountUnits = self.props.amountUnits || "Satoshi";
+        const publisher = self.props.domain.replace(/\./g, "");
         const url = `${BASE_URL}/validate-pay/${publisher}/${amount}`;
         console.log('checkAuth', url);
 
@@ -62,18 +61,33 @@ const Paywall = createReactClass({
                     case 403:
                         // Error from payment server, show the dialog.
                         const sendPaymentTo = data['sendPaymentTo'];
-                        self.setState({sendPaymentTo: sendPaymentTo});
-                        setTimeout(self.handleShow, 1000);
+                        self.setPaymentNeeded(sendPaymentTo);
                         break;
                     default:
-                        // Close the dialog.
-                        self.handleClose();
+                        self.receivedPayment();
                         break;
                 }
             }).catch((err) => {
-            console.error('validate failure', JSON.stringify(err));
+            console.error('validate failure, allowing user through', JSON.stringify(err));
             self.handleClose();
         });
+    },
+
+    // Show payment required.
+    setPaymentNeeded(address) {
+        const self = this;
+        self.setState({sendPaymentTo: address});
+        setTimeout(self.handleShow, 1000);
+    },
+
+    // Close the dialog.
+    receivedPayment() {
+        const self = this;
+        if (self.state.blur > 0) {
+            // Show payment received text.
+            self.setState({paymentReceived: true});
+        }
+        setTimeout(self.handleClose, 1000);
     },
 
     handleClose() {
@@ -81,7 +95,7 @@ const Paywall = createReactClass({
     },
 
     handleShow() {
-        this.setState({blur: this.props.blur || DEFAULT_BLUR, showModal: true})
+        this.setState({blur: this.props.blur || DEFAULT_BLUR, showModal: true, paymentReceived: false})
     },
 
     render() {
@@ -91,7 +105,6 @@ const Paywall = createReactClass({
                 Get automatic access once payment/transaction confirmed.
             </Popover>
         );
-        const tooltip = <Tooltip id="modal-tooltip">wow.</Tooltip>;
 
         const blur = this.state.blur;
 
@@ -122,10 +135,18 @@ const Paywall = createReactClass({
 
                         <p>to continue reading.</p>
 
-                        <Button bsStyle="success" className="wallet-button" onClick={() => {
-                            self.handleClose()
-                        }}>Authorize Payment of {self.props.amount} {self.props.amountUnits}</Button>
 
+                        <Button
+                            bsStyle="success"
+                            className="wallet-button"
+                            onClick={() => {
+                                self.receivedPayment()
+                            }}>
+                            Authorize Payment of {self.props.amount} {self.props.amountUnits}
+                        </Button>
+                        <p className="small-text italics">access: {self.props.domain}</p>
+
+                        {this.state.paymentReceived && <p className="neo-green">Thanks for your Payment! One moment...</p>}
                     </Modal.Body>
                     <Modal.Footer>
                         <div>
