@@ -20,7 +20,7 @@ const library = (function () {
         apiKey: 'hunter3',
     });
 
-    const wallet = new Wallet({
+    const httpWallet = new Wallet({
         network: 'testnet',
         uri: 'http://localhost:18332',
         apiKey: 'hunter3',
@@ -35,7 +35,7 @@ const library = (function () {
     //     "confirmed": "8150.0"
     // }
     async function hasBalance(address, requiredBalance) {
-        const receiveAddress = db.get('accounts').find({ address: address }).value();
+        const receiveAddress = db.get('accounts').find({address: address}).value();
         const response = httpWallet.getBalance(receiveAddress['name']);
         console.log(response);
         const currentBalance = response['confirmed'];
@@ -59,13 +59,16 @@ const library = (function () {
     //     "address": "mwX8J1CDGUqeQcJPnjNBG4s97vhQsJG7Eq"
     // }
     async function createAddress() {
-        const httpWallet = new bcoin.http.Wallet({id: OWNER_WALLET_ID});
-        const receiveAddress = await httpWallet.createAddress(uuidv4());
+        const accountName = uuidv4();
+        const receiveAddress = await httpWallet.createAddress(accountName);
         // Add a new live account to the local db.
-        const text = JSON.stringify(receiveAddress);
-        db.get('accounts').push(receiveAddress).write();
-        console.log(receiveAddress);
-        return receiveAddress['address'];
+        if (receiveAddress) {
+            db.get('accounts').push(receiveAddress).write();
+            const text = JSON.stringify(receiveAddress);
+            console.log('receiveAddress', accountName, text);
+            return receiveAddress['address'];
+        }
+        throw "null receiveAddress from httpWallet.createAddress()"
     }
 
     return {

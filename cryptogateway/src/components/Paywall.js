@@ -2,7 +2,7 @@ import React from 'react';
 import createReactClass from 'create-react-class';
 import {Button, Modal, OverlayTrigger, Popover, Tooltip} from "react-bootstrap";
 
-const BASE_URL = "http://localhost:8000";
+const BASE_URL = "http://localhost:3001";
 const DEFAULT_BLUR = 5;
 
 const Paywall = createReactClass({
@@ -24,7 +24,8 @@ const Paywall = createReactClass({
         fetch(`${BASE_URL}/hello`, {header: {
             'Access-Control-Allow-Origin':'*',
         }}).then(function (response) {
-            console.log('response', response)
+            console.log('response', response);
+
             return response.json();
         }).catch((error) => {
             console.log('error', error)

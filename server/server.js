@@ -3,7 +3,7 @@
 const Hapi = require('hapi');
 const corsHeaders = require('hapi-cors-headers');
 const mybcoin = require('./bcoin/coin');
-const SERVER_PORT = 8000;
+const SERVER_PORT = 3001;
 
 const server = Hapi.server({
     host: 'localhost',
@@ -32,7 +32,7 @@ server.state(COOKIE_KEY, {
     isHttpOnly: true,
     encoding: 'base64json',
     clearInvalid: false, // remove invalid cookies
-    strictHeader: true // don't allow violations of RFC 6265
+    strictHeader: false // don't allow violations of RFC 6265
 });
 
 server.route({
@@ -57,12 +57,13 @@ server.route({
 
         // If no cookie exists, create a blockchain address, return it to the caller, and set it as the cookie
         let payload = request.state[COOKIE_KEY];
-        console.log('current payload', payload);
 
         if (!payload) {
             // no cookie present or generated yet.
             payload = {sendPaymentTo: null, viewCount: 0};
         }
+        console.log('current payload', payload);
+
         payload.viewCount += 1;
         if (payload.viewCount <= ALLOWED_VIEWS) {
             return h.response("Authorized").code(200).state(COOKIE_KEY, payload);
@@ -75,7 +76,9 @@ server.route({
                 payload.sendPaymentTo = paymentAddress;
                 return h.response(payload).code(403).state(COOKIE_KEY, payload);
             }).catch((err) => {
-                return h.response(err).code(500);
+                const msg = JSON.stringify(err);
+                console.error('error creating address', msg);
+                return h.response(msg).code(500);
             });
         } else {
             // Payment address is defined, check for sufficient balance at that address.
@@ -91,7 +94,6 @@ server.route({
         }
     }
 });
-
 
 // Start the server
 async function start() {
