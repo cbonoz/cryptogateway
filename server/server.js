@@ -2,6 +2,7 @@
 
 const Hapi = require('hapi');
 const mybcoin = require('./bcoin/coin');
+//const mybcoin = require('./bcoin/coin_mock');
 const SERVER_PORT = 3001;
 
 const server = Hapi.server({
@@ -153,10 +154,10 @@ async function start() {
                 storeBlank: false,
                 cookieOptions: {
                     password: 'coingateway-super-secret-password',
+                    ttl: null, // can be millisec, this is per-session for easy testing
                     //isSecure: true, // Makes the cookie HTTPS only - enable in production
                     isSecure: false,
                     /*
-                     ttl: null, // can be millisec, this is per-session for easy testing
                      isHttpOnly: true,
                      encoding: 'base64json',
                      clearInvalid: false, // remove invalid cookies
