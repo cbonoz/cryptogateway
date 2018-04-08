@@ -1,54 +1,11 @@
-const bcoin = require('bcoin')
-const Client = bcoin.http.Client;
-const Wallet = bcoin.http.Wallet;
+const mybcoin = require('./bcoin/coin');
 
-const client = new Client({
-    network: 'testnet',
-    uri: 'http://localhost:18332',
-    apiKey: 'hunter3',
-});
+const accountName = 'defasult';
 
-const wallet = new Wallet({
-    network: 'testnet',
-    uri: 'http://localhost:18332',
-    apiKey: 'hunter3',
-    id: 'primary'
-});
+async function test() {
+    const receiveAddress = await mybcoin.httpWallet.createAddress(accountName);
+    console.log('receiveAddress', receiveAddress);
+    return receiveAddress;
+}
 
-(async () => {
-    const wallets = await client.getWallets();
-    console.log(wallets)
-})();
-
-
-id='foo1'
-passphrase='bar'
-witness='false'
-
-const options = {
-    id: id,
-    passphrase: passphrase,
-    witness: witness,
-    watchOnly: true,
-    accountKey: accountKey
-};
-
-(async() => {
-    const newWallet = await client.createWallet(options)
-    console.log('new wallet', newWallet)
-})();
-
-
-// (async () => {
-//     const wallet = await httpWallet.getInfo();
-//     console.log(wallet);
-// })();
-
-
-// let account='bar';
-// const httpWallet = bcoin.http.Wallet({ id: id });
-
-// (async () => {
-//     const response = httpWallet.getBalance(account);
-//     console.log(response);
-// })();
+mybcoin.getAccount(accountName).then((res) => console.log('res', res)).catch((err) => {console.error('err', err)});

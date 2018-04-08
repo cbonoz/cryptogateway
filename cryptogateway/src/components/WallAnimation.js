@@ -8,6 +8,8 @@ import PropTypes from 'prop-types';
 import {Stage, Layer, Rect, Text} from "react-konva";
 import * as Konva from "konva";
 
+
+const ANIMATION_INTERVAL = 15000;
 const PARTICLE_SIZE = 5;
 const PARTICLE_INTERVAL = 600;
 const PARTICLE_SPEED = 3;
@@ -70,9 +72,12 @@ const WallAnimation = createReactClass({
         self.setState({particles: newParticles});
         console.log('particles: ', newParticles);
 
-
         self.updateWallHeight();
 
+    },
+
+    resetAnimation() {
+        this.setState({particles: [], wallHeight: 0});
     },
 
     updateWallHeight() {
@@ -95,6 +100,7 @@ const WallAnimation = createReactClass({
 
         setInterval(self.particleLoop, 15);
         setInterval(self.createParticle, PARTICLE_INTERVAL);
+        setInterval(self.resetAnimation, ANIMATION_INTERVAL);
     },
 
     render() {
@@ -115,11 +121,11 @@ const WallAnimation = createReactClass({
                                 width={PARTICLE_SIZE}
                                 height={PARTICLE_SIZE}/>
                         </Layer>
-                        })}
+                    })}
                     <Layer>
-                    <ColoredRect x={self.state.wallPosition} y={0}
-                                 width={100}
-                                 height={self.state.wallHeight}/>
+                        <ColoredRect x={self.state.wallPosition} y={0}
+                                     width={100}
+                                     height={self.state.wallHeight}/>
                     </Layer>
 
                 </Stage>

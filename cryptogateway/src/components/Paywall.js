@@ -34,19 +34,20 @@ const Paywall = createReactClass({
         const self = this;
         // units in satoshi.
         const amount = self.props.amount || 500;
+        const domain = self.props.customerDomain || 'www.example.com'
         const amountUnits = self.props.amountUnits || "Satoshi";
-        const url = `${BASE_URL}/validate-pay/${amount}`;
+        const url = `${BASE_URL}/validate-pay/${domain}/${amount}`;
         console.log('checkAuth', url);
 
         fetch(url, {header: {
             'Access-Control-Allow-Origin':'*',
         }}).then(function (response) {
-            console.log('response', response)
+            console.log('response', response);
             return response.json();
         }).catch((error) => {
             console.log('error', error)
         }).then(function (res) {
-            console.log('validate success', res.message);
+            console.log('validate success', res);
             // Ok to proceed (remove the blur).
             self.handleClose();
         }).catch((err) => {
