@@ -15,9 +15,25 @@ Steps for install:
 <ol>
     <li>Create account on Cryptogateway.com - registering your domain name.
     <li>Install dependencies within <i>Paywall.js</i></li>
-    <li>Wrap your sensitive website content with the Paywall.js component (adding the appropriate payment options).</li>
+    <li>Selectively wrap your sensitive website content (or your entire site) with the Paywall.js component - adding the appropriate payment parameters needed for access.</li>
 
 </ol>
+
+### Screenshots
+
+<div width="800" style="text-align:center">
+    <h3>Home Page</h3>
+        <img src="./screenshots/home.png" width="600" style="margin: 0 auto"/>
+    <h3>Home page (with paywall applied)</h3>
+        <img src="./screenshots/home_wall.png" width="600" style="margin: 0 auto"/>
+    <h3>About page</h3>
+        <img src="./screenshots/about.png" width="600" style="margin: 0 auto"/>
+    <h3>Articles page (more sensitive content)</h3>
+        <img src="./screenshots/articles.png" width="600" style="margin: 0 auto"/>
+    <h3>Article page (with paywall applied)</h3>
+        <img src="./screenshots/articles_wall.png" width="600" style="margin: 0 auto"/>
+</div>
+
 
 ### Structure
 * <b>/cryptogateway</b>: website
