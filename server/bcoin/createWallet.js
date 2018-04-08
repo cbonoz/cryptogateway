@@ -31,11 +31,11 @@ const options = {
 };
 
 (async() => {
-    const newWallet = await client.createWallet(options)
+    const newWallet = await client.createWallet(options);
     // Save this information.
-    console.log('created owner wallet', newWallet)
+    console.log('created owner wallet', newWallet);
     const walletInfo = JSON.stringify(newWallet);
-    const walletFile = "./bcoin/wallet.json";
+    const walletFile = "./bcoin/crypto_gateway_wallet.json";
     fs.writeFile(walletFile, walletInfo, function(err) {
         if(err) {
             return console.log(err);
