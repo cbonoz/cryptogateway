@@ -1,5 +1,5 @@
 {
-  "accounts": [],
+  "accounts": ["wwwcryptogatewaycom"],
   "addresses": [
     {
       "network": "testnet",

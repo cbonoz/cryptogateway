@@ -25,7 +25,7 @@ class App extends Component {
                 <Paywall
                     disabled={false}
                     onClick={false}
-                    amount={.0001}
+                    amount={0.0}
                          amountUnits={"Bitcoin"}
                          domain="www.cryptogateway.com"
                          excludedUrls={["/", "/articles"]}>

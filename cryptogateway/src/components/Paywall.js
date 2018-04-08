@@ -39,8 +39,8 @@ const Paywall = createReactClass({
     checkAuth() {
         const self = this;
         // units in satoshi.
-        const amount = self.props.amount || 500;
-        const publisher = self.props.domain.replace(/\./g, "");
+        const amount = self.props.amount || 0;
+        const publisher = self.props.domain.replace(/[\.\/]/g, "_");
         const url = `${BASE_URL}/validate-pay/${publisher}/${amount}`;
         console.log('checkAuth', url);
 
@@ -123,7 +123,8 @@ const Paywall = createReactClass({
 
         return (
             <div>
-                <div style={{WebkitFilter: `blur(${blur}px) saturate(2)`, cursor: 'pointer'}} onClick={() => self.checkAuthManual()}>
+                <div style={{WebkitFilter: `blur(${blur}px) saturate(2)`, cursor: 'pointer'}}
+                     onClick={() => self.checkAuthManual()}>
                     {this.props.children}
                 </div>
 
@@ -140,14 +141,15 @@ const Paywall = createReactClass({
 
                         <hr/>
 
-                        <p>Send <b>{self.props.amount}</b> {self.props.amountUnits} to address:</p>
+                        {self.props.amount > 0 && <div>
+                            <p>Send <b>{self.props.amount}</b> {self.props.amountUnits} to address:</p>
+                            <OverlayTrigger overlay={popover}>
+                                <h3><b>{self.state.sendPaymentTo}</b></h3>
+                            </OverlayTrigger>
+                            <p>to continue reading.</p>
+                        </div>}
 
-                        <OverlayTrigger overlay={popover}>
-                            <h3><b>{self.state.sendPaymentTo}</b></h3>
-                        </OverlayTrigger>
-
-                        <p>to continue reading.</p>
-
+                        {self.props.amount == 0 && <p>This page is free to view! Click authorize to continue</p>}
 
                         <Button
                             bsStyle="success"
@@ -159,7 +161,8 @@ const Paywall = createReactClass({
                         </Button>
                         <p className="small-text italics">access: {self.props.domain}</p>
 
-                        {this.state.paymentReceived && <p className="neo-green">Thanks for your Payment! One moment...</p>}
+                        {this.state.paymentReceived &&
+                        <p className="neo-green">Thanks for your Payment! One moment...</p>}
                     </Modal.Body>
                     <Modal.Footer>
                         <div>

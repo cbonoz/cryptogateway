@@ -40,9 +40,9 @@ const Articles = createReactClass({
                     <Paywall
                         disabled={false}
                         onClick={true}
-                        amount={.0001}
+                        amount={0.00001}
                         amountUnits={"Bitcoin"}
-                        domain="www.cryptogateway.com">
+                        domain="www.cryptogateway.com/articles">
                         {["New Features", "Beta Testing", "Announcement"].map((title,i) => {
                             return <div className="article-post" key={i}>
                                 <h4>Post: {title}</h4>
