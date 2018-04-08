@@ -13,15 +13,6 @@ const server = Hapi.server({
 
 const SESSION_KEY = 'cgpayment';
 
-server.state(SESSION_KEY, {
-    ttl: null,
-    isSecure: true,
-    isHttpOnly: true,
-    encoding: 'base64json',
-    clearInvalid: false, // remove invalid cookies
-    strictHeader: true // don't allow violations of RFC 6265
-});
-
 // ----------------------
 // Client-facing portion 
 // ----------------------
@@ -82,12 +73,11 @@ server.route({
             return h.response(createJson("Invalid request, please specify publisher")).code(400);
         }
 
-        // const sessionData = request.yar.get(SESSION_KEY) || {publishers: {}};
-        const sessionData = request.state[SESSION_KEY] || {publishers: {}};
+        const sessionData = request.yar.get(SESSION_KEY) || {publishers: {}};
 
         console.log('Current session data', sessionData);
 
-        const thisPublisherEntry = sessionData['publishers'][publisher];
+        const thisPublisherEntry = sessionData.publishers[publisher];
 
         // Reusable handler bits
         const returnError = (type, err) => {
@@ -99,15 +89,15 @@ server.route({
         const createAddress = (accountId) => {
           return mybcoin.createAddress(accountId).then((paymentAddress) => {
             console.log('Server - generated payment address: ', JSON.stringify(paymentAddress));
-            sessionData['publishers'][publisher] = {
+            sessionData.publishers[publisher] = {
               amount: amount,
               address: paymentAddress,
               requestedAt: Date.now()
             };
-            // request.yar.set(SESSION_KEY, sessionData);
+            request.yar.set(SESSION_KEY, sessionData);
             const data = { sendPaymentTo: paymentAddress, firstVisit: true };
             console.log('returning data', data);
-            return h.response(data).code(403).state(SESSION_KEY, sessionData);
+            return h.response(data).code(403);
           }).catch((err) => returnError("creating address", err));
         };
 
@@ -144,9 +134,7 @@ server.route({
     method: 'GET',
     path: '/payments/list',
     handler: async function (request, h) {
-        // const sessionData = request.yar.get(SESSION_KEY);
-        const sessionData = request.state[SESSION_KEY] || {publishers: {}};
-
+        const sessionData = request.yar.get(SESSION_KEY);
         if (!sessionData) {
             return h.response([]);
         }
