@@ -7,29 +7,22 @@ let { join } = require('path')
 
 let app = lotion({ initialState: {}, devMode: true })
 
-const low = require('lowdb');
-const FileSync = require('lowdb/adapters/FileSync');
-const adapter = new FileSync('cosmos.json');
-const db = low(adapter);
 
-const addressMap = {};
-const values = db.get('addresses').value();
-values.map((entry) => {
-  addressMap[entry.address] = entry.balance;
-})
-
-console.log('addressMap', addressMap)
 
 app.use(coins({
   name: 'testcoin',
-  initialBalances: addressMap
+  initialBalances: {
+    // map addresses to balances
+    'aSQK5GzNyWFJn7s1U5CpcNUZqQpen3BA': 10,
+    'bSQK5GzNyWFJn7s1U5CpcNUZqQpen3BA': 20,
+    'cSQK5GzNyWFJn7s1U5CpcNUZqQpen3BA':30
+  }
 }))
-
 
 //If you listen on the port for tendermint and then hit slash, you can get a list of everything you can query from tendermint
 app.listen(3000).then(function(appInfo) {
     console.log(appInfo)
-    fs.writeFileSync('gci.txt',getGCI(appInfo),'utf8')
+    fs.writeFileSync('gci_demo.txt',getGCI(appInfo),'utf8')
 })
 
 
