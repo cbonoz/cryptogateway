@@ -5,6 +5,8 @@ import {Button, Modal, OverlayTrigger, Popover, Tooltip} from "react-bootstrap";
 const BASE_URL = "http://localhost:3001";
 const DEFAULT_BLUR = 5;
 
+const AUTH_CHECK_FREQUENCY = 5000;
+
 const Paywall = createReactClass({
 
     componentWillMount() {
@@ -23,10 +25,14 @@ const Paywall = createReactClass({
             if (onClick) {
                 this.setState({blur: this.props.blur || DEFAULT_BLUR});
             } else {
-                this.setState({authInterval: setInterval(this.checkAuth, this.props.authInterval || 100000)});
-                this.checkAuth();
+                this.scheduleAuthCheck();
             }
         }
+    },
+
+    scheduleAuthCheck() {
+        this.setState({authInterval: setInterval(this.checkAuth, this.props.authInterval || AUTH_CHECK_FREQUENCY)});
+        this.checkAuth();
     },
 
     handleErrors(response) {
@@ -99,7 +105,7 @@ const Paywall = createReactClass({
     checkAuthManual() {
         console.log('checkAuthManual');
         if (this.props.onClick === true) {
-            this.checkAuth();
+            this.scheduleAuthCheck();
         }
     },
 
