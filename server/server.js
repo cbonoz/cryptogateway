@@ -8,7 +8,7 @@ const SERVER_PORT = 3001;
 const server = Hapi.server({
     host: 'localhost',
     port: SERVER_PORT,
-    routes: {cors: {origin: ['*']}}
+    routes: {cors: {origin: ['*'], credentials: true}}
 });
 
 const SESSION_KEY = 'cgpayment';
@@ -119,11 +119,14 @@ server.route({
             }).catch((err) => returnError("getting account", err));
         } else {
             // Entry exists and hence payment address is defined, check for sufficient balance at that address.
-            return mybcoin.hasBalance(thisPublisherEntry.address, thisPublisherEntry.amount).then((res) => {
+            console.log('publisher', thisPublisherEntry);
+            return mybcoin.hasBalance(thisPublisherEntry['address'], thisPublisherEntry['amount']).then((res) => {
                 if (res) {
+                    console.log('hasBalance', res);
                     return h.response(createJson("Authorized")).code(200);
                 } else {
-                    return h.response({ sendPaymentTo: thisPublisherEntry.address, firstVisit: false}).code(403);
+                    console.log('sending 403', res);
+                    return h.response({ sendPaymentTo: thisPublisherEntry['address'], firstVisit: false}).code(403);
                 }
             }).catch((err) => returnError("checking balance", err));
         }
@@ -142,7 +145,7 @@ server.route({
         let payments = [];
         Object.keys(sessionData.publishers).forEach(async (k) => {
             let entry = sessionData.publishers[k];
-            let hasBalane = await mybcoin.hasBalance(entry.address, entry.amount);
+            let hasBalance = await mybcoin.hasBalance(entry.address, entry.amount);
             payments.push({publisher: k, amount: entry.amount, paid: hasBalance, requestedAt: entry.requestedAt});
         });
 

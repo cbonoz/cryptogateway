@@ -40,8 +40,9 @@ const Paywall = createReactClass({
         console.log('checkAuth', url);
 
         fetch(url, {
+            credentials: 'include',
             header: {
-                'Access-Control-Allow-Origin': '*',
+                'Access-Control-Allow-Origin': '*'
             }
         })
             .then(response =>
