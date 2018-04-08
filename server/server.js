@@ -10,42 +10,36 @@ const server = Hapi.server({
     routes: {cors: {origin: ['*']}}
 });
 
-const COOKIE_KEY = 'cgpayment';
-const ALLOWED_VIEWS = 0;
+const SESSION_KEY = 'cgpayment';
 
-// ---------------------------------
-// Blockchain interaction functions
-// ---------------------------------
+// ----------------------
+// Client-facing portion 
+// ----------------------
 
-// ---------
-// Web part
-// ---------
-
-// Configure the cookie
-// The cookie will store the payment address we generated for this browser
-server.state(COOKIE_KEY, {
-    ttl: null, // can be millisec, this is per-session for easy testing
-    //isSecure: true, // TODO: Makes the cookie HTTPS only - enable in production
-    isSecure: false,
-    isHttpOnly: true,
-    encoding: 'base64json',
-    clearInvalid: false, // remove invalid cookies
-    strictHeader: false // don't allow violations of RFC 6265
-});
-
-server.route({
-    method: 'GET',
-    path: '/hello',
-    handler: function (request, h) {
-        return h.response("Hello").code(200);
-    }
-});
+// Session object structure:
+// {
+//  publishers: {
+//   "Washington Post": { 
+//    address: "0xBADABADA"
+//    amount: 3,
+//    requestedAt: 1523158005415 // time from Date.now() when requested (millisecs since Jan 1st 1970)
+//   },
+//   "New-York Times": { 
+//    address: "0xBADABBBB"
+//    amount: 5,
+//    requestedAt: 1523157803067
+//   },
+//  ....
+//  }
+// }
 
 // Add our validate pay API route
 server.route({
     method: 'GET',
-    path: '/validate-pay/{amount?}',
-    handler: function (request, h) {
+    path: '/validate-pay/{publisher}/{amount}',
+    handler: async function (request, h) {
+
+        // *** Parameter validation ***
 
         // Receive required amount as a parameter
         const amount = request.params.amount;
@@ -53,43 +47,67 @@ server.route({
             return h.response("Invalid request, please specify amount").code(400);
         }
 
-        // If no cookie exists, create a blockchain address, return it to the caller, and set it as the cookie
-        let payload = request.state[COOKIE_KEY];
-
-        if (!payload) {
-            // no cookie present or generated yet.
-            payload = {sendPaymentTo: null, viewCount: 0};
-        }
-        console.log('current payload', payload);
-
-        payload.viewCount += 1;
-        if (payload.viewCount <= ALLOWED_VIEWS) {
-            return h.response("Authorized").code(200).state(COOKIE_KEY, payload);
+        // Receive publisher name
+        const publisher = request.params.publisher;
+        if (!publisher) {
+            return h.response("Invalid  request, please specify publisher").code(400);
         }
 
-        if (!payload.sendPaymentTo) {
+        let sessionData = request.yar.get(SESSION_KEY);
+
+        if (!sessionData)
+          // First-time user - generate fresh session data
+          sessionData = { publishers: {} };
+
+        console.log('Current session data', sessionData);
+
+        let thisPublisherEntry = sessionData.publishers[publisher];
+
+        if (!thisPublisherEntry) {
             // First time user sending this, generate a 403.
-            mybcoin.createAddress().then((paymentAddress) => {
-                console.log('back in server', JSON.stringify(paymentAddress));
-                payload.sendPaymentTo = paymentAddress;
-                return h.response(payload).code(403).state(COOKIE_KEY, payload);
+            return mybcoin.createAddress().then((paymentAddress) => {
+                console.log('Server - generated payment address: ', JSON.stringify(paymentAddress));
+                sessionData.publishers[publisher] = { amount: amount, address: paymentAddress, requestedAt: Date.now() };
+                request.yar.set(SESSION_KEY, sessionData);
+                return h.response({ sendPaymentTo: paymentAddress, firstVisit: true }).code(403);
             }).catch((err) => {
                 const msg = JSON.stringify(err);
-                console.error('error creating address', msg);
+                console.error('Server - error creating address: ', msg);
                 return h.response(msg).code(500);
             });
         } else {
-            // Payment address is defined, check for sufficient balance at that address.
-            mybcoin.hasBalance(payload.sendPaymentTo, amount).then((res) => {
+            // Entry exists and hence payment address is defined, check for sufficient balance at that address.
+            return mybcoin.hasBalance(payload.sendPaymentTo, amount).then((res) => {
                 if (res) {
-                    return h.response("Authorized").code(200).state(COOKIE_KEY, payload);
+                    return h.response("Authorized").code(200);
                 } else {
-                    // Else not authorized.
-                    // For now the client can't tell if the address is new or not. We can change this if needed
-                    return h.response(payload).code(403).state(COOKIE_KEY, payload);
+                    return h.response({ sendPaymentTo: thisPublisherEntry.address, firstVisit: false }).code(403);
                 }
-            });
+            }).catch((err) => {
+                const msg = JSON.stringify(err);
+                console.error('Server - error checking balance: ', msg);
+                return h.response(msg).code(500);
+            });;
         }
+    }
+});
+
+server.route({
+    method: 'GET',
+    path: '/payments/list',
+    handler: async function (request, h) {
+        const sessionData = request.yar.get(SESSION_KEY);
+        if (!sessionData);
+          return h.response([]);
+
+        let payments = [];
+        Object.keys(sessionData.publishers).forEach(async (k) => {
+          let entry = sessionData.publishers[k];
+          let hasBalane = await mybcoin.hasBalance(entry.address, entry.amount);
+          payments.push({ publisher: k, amount: entry.amount, paid: hasBalance, requestedAt: entry.requestedAt });
+        });
+
+        return h.response(payments).code(200);
     }
 });
 
@@ -97,6 +115,27 @@ server.route({
 async function start() {
 
     try {
+        // Configure the session
+        // We save payment requests in the session structure. yar automatically uses cookie data + server-side storage as needed
+        // We need to store payment requests + generated addresses
+        await server.register({
+            plugin: require('yar'),
+            options: {
+              storeBlank: false,
+              cookieOptions: {
+                  password: 'coingateway-super-secret-password',
+                  //isSecure: true, // Makes the cookie HTTPS only - enable in production
+                  isSecure: false,
+                  /*
+                  ttl: null, // can be millisec, this is per-session for easy testing
+                  isHttpOnly: true,
+                  encoding: 'base64json',
+                  clearInvalid: false, // remove invalid cookies
+                  strictHeader: false // don't allow violations of RFC 6265
+                  */
+              }
+          }
+        });
         await server.start();
     }
     catch (err) {
