@@ -10,7 +10,9 @@ const Articles = createReactClass({
             <div>
                 <h1>Articles</h1>
 
-                <h3>{new Date().toLocaleDateString()}</h3>
+                <hr/>
+
+                <h4>Post: {new Date().toLocaleDateString()}</h4>
 
                 <p className="article-content">
                     Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque ac sodales velit. Etiam
@@ -25,17 +27,17 @@ const Articles = createReactClass({
                     lectus. Nam aliquam, libero vel tincidunt elementum, libero ipsum finibus magna, vel interdum risus
                     eros non mi.
                 </p>
+
                 <p className="article-content">
 
                     Etiam nunc massa, placerat sit amet turpis eget, elementum mattis augue. In eget enim nibh. Mauris
                     faucibus nec dui at ultricies. Integer id imperdiet lorem. Sed sit amet euismod diam. Donec lorem
-                    nisi,
-                    egestas eget turpis sit amet, accumsan luctus tellus. Proin sit amet dui dignissim, tempor leo ac,
-                    dignissim ligula. Maecenas sit amet ultricies tortor. Proin non fermentum est. Pellentesque habitant
-                    morbi tristique senectus et netus et malesuada fames ac turpis egestas. Morbi dignissim pulvinar
-                    lectus
-                    a vehicula.
+                    nisi,egestas eget turpis sit amet, accumsan luctus tellus. Proin sit amet dui dignissim, tempor
+                    leo ac,dignissim ligula. Maecenas sit amet ultricies tortor. Proin non fermentum est.
+                    Pellentesque habitantmorbi tristique senectus et netus et malesuada fames ac turpis egestas. Morbi
+                    dignissim pulvinarlectusa vehicula.
                 </p>
+
             </div>
         );
     }

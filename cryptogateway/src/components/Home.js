@@ -1,7 +1,7 @@
 import React from 'react';
 
 import createReactClass from 'create-react-class';
-import {Button, Grid, Row, Col} from 'react-bootstrap';
+import {Button, Grid, Row, Col, Modal} from 'react-bootstrap';
 
 import gatewayLogo from '../assets/cryptogateway.png';
 import businessLogo from '../assets/your_business.png';
@@ -15,10 +15,16 @@ const Home = createReactClass({
 
     componentWillMount() {
         this.setState({
-            files: [],
-            blockFiles: []
+            showModal: false,
         });
+    },
 
+    handleShow() {
+        this.setState({showModal: true});
+    },
+
+    handleClose() {
+        this.setState({showModal: false});
     },
 
     getAccount() {
@@ -45,7 +51,7 @@ const Home = createReactClass({
                     </Col>
                     <Col xs={12} md={7}>
                         {/*TODO: readd*/}
-                        <WallAnimation/>
+                        {/*<WallAnimation/>*/}
                     </Col>
                     <Col xs={12} md={3}>
                         <img src={businessLogo} className="business-logo"/>
@@ -56,7 +62,7 @@ const Home = createReactClass({
                 </Row>
 
                 <div className="centered">
-                    <Button bsStyle="primary" className="create-button" onClick={() => self.getAccount()}>Download the
+                    <Button bsStyle="primary" className="create-button" onClick={() => self.handleShow()}>Download the
                         plugin</Button>
                 </div>
 
@@ -79,6 +85,30 @@ const Home = createReactClass({
                         <Col xs={2} md={2}></Col>
                     </Row>
                 </Grid>
+
+                <Modal show={this.state.showModal} onHide={this.handleClose}>
+                    <Modal.Header can>
+                        <Modal.Title><b>Create a new Cryptogateway account</b></Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                        <h4>All you need is a username and password <br/>and we'll take care of the rest.</h4>
+
+                        <p>An account will automatically be generated for you which will store any funds sent to you
+                            by your website visitors. Each customer will be mapped to a unique address which is used to
+                            verify
+                            whether they have paid for website access or not.</p>
+                        <hr/>
+                    </Modal.Body>
+
+                    <Modal.Footer>
+                        <div>
+                            <Button bsStyle="success" onClick={() => {
+                                self.handleClose()
+                            }}>Submit</Button>
+                        </div>
+                    </Modal.Footer>
+                </Modal>
+
 
             </div>
         );

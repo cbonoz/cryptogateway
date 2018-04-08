@@ -88,7 +88,7 @@ const Paywall = createReactClass({
         const self = this;
         const popover = (
             <Popover id="modal-popover" title="popover">
-                very popover. such engagement
+                Get automatic access once payment/transaction confirmed.
             </Popover>
         );
         const tooltip = <Tooltip id="modal-tooltip">wow.</Tooltip>;
@@ -101,46 +101,30 @@ const Paywall = createReactClass({
                     {this.props.children}
                 </div>
 
-                <Modal show={this.state.showModal}
-                    // onHide={this.handleClose}
+                <Modal show={this.state.showModal} // onHide={this.handleClose}
                 >
                     <Modal.Header>
                         <Modal.Title><b>Producing Quality Content Costs Money.</b></Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
 
-                        <h4>Support quality journalism - no subscription necessary.</h4>
+                        <div className="centered">
+                            <h4>Support quality journalism - no subscription necessary.</h4>
+                        </div>
+
+                        <hr/>
 
                         <p>Send <b>{self.props.amount}</b> {self.props.amountUnits} to address:</p>
 
-                        <h3><b>{self.state.sendPaymentTo}</b></h3>
+                        <OverlayTrigger overlay={popover}>
+                            <h3><b>{self.state.sendPaymentTo}</b></h3>
+                        </OverlayTrigger>
 
                         <p>to continue reading.</p>
 
                         <Button bsStyle="success" className="wallet-button" onClick={() => {
                             self.handleClose()
                         }}>Authorize Payment of {self.props.amount} {self.props.amountUnits}</Button>
-
-                        <hr />
-
-                        {/*<h4>Popover in a modal</h4>*/}
-                        {/*<p>*/}
-                        {/*there is a{' '}*/}
-                        {/*<OverlayTrigger overlay={popover}>*/}
-                        {/*<a href="#popover">popover</a>*/}
-                        {/*</OverlayTrigger>{' '}*/}
-                        {/*here*/}
-                        {/*</p>*/}
-
-                        {/*<h4>Tooltips in a modal</h4>*/}
-                        {/*<p>*/}
-                        {/*there is a{' '}*/}
-                        {/*<OverlayTrigger overlay={tooltip}>*/}
-                        {/*<a href="#tooltip">tooltip</a>*/}
-                        {/*</OverlayTrigger>{' '}*/}
-                        {/*here*/}
-                        {/*</p>*/}
-
 
                     </Modal.Body>
                     <Modal.Footer>

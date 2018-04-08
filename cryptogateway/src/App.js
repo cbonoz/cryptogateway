@@ -18,10 +18,6 @@ import gatewayLogo from './assets/cryptogateway.png';
 
 class App extends Component {
 
-    componentWillMount() {
-
-    }
-
     render() {
         const self = this;
 

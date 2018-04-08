@@ -164,6 +164,7 @@ body {
 .centered {
     margin: 0 auto;
     vertical-align: center;
+    text-align: center;
 }
 
 .header-logo {

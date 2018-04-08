@@ -14,7 +14,10 @@ const Footer = createReactClass({
                 <p className="centered footer">Powered by
                     <span className="cosmos-green">
                         <img src={cosmosLogo} className="cosmos-logo"/>
-                    </span>Blockchain</p>
+                    </span>Blockchain
+
+                    (and bcoin for Bitcoin payment integration).
+                </p>
             </div>
         );
     }
