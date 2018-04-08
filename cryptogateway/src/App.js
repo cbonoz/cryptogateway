@@ -28,7 +28,7 @@ class App extends Component {
                     amount={.0001}
                          amountUnits={"Bitcoin"}
                          domain="www.cryptogateway.com"
-                         excludedUrls={["/"]}>
+                         excludedUrls={["/", "/articles"]}>
                     <Navbar collapseOnSelect>
                         <Navbar.Header>
                             <Navbar.Brand>

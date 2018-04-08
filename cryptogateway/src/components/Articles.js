@@ -42,8 +42,7 @@ const Articles = createReactClass({
                         onClick={true}
                         amount={.0001}
                         amountUnits={"Bitcoin"}
-                        domain="www.cryptogateway.com"
-                        excludedUrls={["/"]}>
+                        domain="www.cryptogateway.com">
                         {["New Features", "Beta Testing", "Announcement"].map((title,i) => {
                             return <div className="article-post" key={i}>
                                 <h4>Post: {title}</h4>
