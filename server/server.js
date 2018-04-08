@@ -33,6 +33,10 @@ const SESSION_KEY = 'cgpayment';
 //  }
 // }
 
+function createJson(msg) {
+    return {message: msg};
+}
+
 // Add our validate pay API route
 server.route({
     method: 'GET',
@@ -40,18 +44,19 @@ server.route({
     handler: async function (request, h) {
 
         // *** Parameter validation ***
+        console.log('validate-pay');
 
         // Receive required amount as a parameter
         const amount = request.params.amount;
         if (!amount) {
-            return h.response("Invalid request, please specify amount").code(400);
+            return h.response(createJson("Invalid request, please specify amount")).code(400);
         }
 
         // Receive publisher name
-        let publisher = request.params.publisher;
-        publisher = publisher.replace(/./g, "");
+        const publisher = request.params.publisher;
+        console.log('publisher', publisher);
         if (!publisher) {
-            return h.response("Invalid  request, please specify publisher").code(400);
+            return h.response(createJson("Invalid request, please specify publisher")).code(400);
         }
 
         let sessionData = request.yar.get(SESSION_KEY);
@@ -70,7 +75,7 @@ server.route({
         const returnError = (type, err) => {
             let msg = `Server - error ${type} for publisher ${publisher}: ${JSON.stringify(err)}`;
             console.log(msg);
-            return h.response(msg).code(500);
+            return h.response(createJson(msg)).code(500);
         };
 
         const createAddress = (accountId, firstVisit) => {
@@ -106,7 +111,7 @@ server.route({
             // Entry exists and hence payment address is defined, check for sufficient balance at that address.
             return mybcoin.hasBalance(thisPublisherEntry.address, thisPublisherEntry.amount).then((res) => {
                 if (res) {
-                    return h.response("Authorized").code(200);
+                    return h.response(createJson("Authorized")).code(200);
                 } else {
                     return h.response({ sendPaymentTo: thisPublisherEntry.address, firstVisit: false}).code(403);
                 }
