@@ -553,15 +553,17 @@ code-point-at@^1.0.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/code-point-at/-/code-point-at-1.1.0.tgz#0d070b4d043a5bea33a2f1a40e2edb3d9a4ccf77"
 
-coins@^2.4.0:
-  version "2.4.0"
-  resolved "https://registry.yarnpkg.com/coins/-/coins-2.4.0.tgz#7658dc37dd422ed1cf9d4079ad5ce7c180dd5423"
+coins@^2.6.0:
+  version "2.7.0"
+  resolved "https://registry.yarnpkg.com/coins/-/coins-2.7.0.tgz#e9639f425e87a539df0c41b604794e2f99353fbb"
   dependencies:
     bs58check "^2.1.1"
     clauses "^1.1.2"
     json-stable-stringify "^1.0.1"
+    mkdirp "^0.5.1"
     secp256k1 "^3.3.1"
     supercop.js "^2.0.1"
+    user-home "^2.0.0"
 
 combined-stream@1.0.6, combined-stream@~1.0.5:
   version "1.0.6"
@@ -1916,7 +1918,7 @@ options@>=0.0.5:
   version "0.0.6"
   resolved "https://registry.yarnpkg.com/options/-/options-0.0.6.tgz#ec22d312806bb53e731773e7cdaefcf1c643128f"
 
-os-homedir@^1.0.1:
+os-homedir@^1.0.0, os-homedir@^1.0.1:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/os-homedir/-/os-homedir-1.0.2.tgz#ffbc4988336e0e833de0c168c7ef152121aa7fb3"
 
@@ -2710,6 +2712,12 @@ unzip@^0.1.11:
     pullstream ">= 0.4.1 < 1"
     readable-stream "~1.0.31"
     setimmediate ">= 1.0.1 < 2"
+
+user-home@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/user-home/-/user-home-2.0.0.tgz#9c70bfd8169bc1dcbf48604e0f04b8b49cde9e9f"
+  dependencies:
+    os-homedir "^1.0.0"
 
 util-deprecate@~1.0.1:
   version "1.0.2"

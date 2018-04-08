@@ -2,3 +2,4 @@
 cryptogateway/node_modules/
 server/node_modules/
 server/db.json
+server/cosmos.json

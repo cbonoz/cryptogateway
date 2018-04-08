@@ -27,7 +27,7 @@ app.use(coins({
 
 
 //If you listen on the port for tendermint and then hit slash, you can get a list of everything you can query from tendermint
-app.listen(3000).then(function(appInfo) {
+app.listen(3002).then(function(appInfo) {
     console.log(appInfo)
     fs.writeFileSync('gci.txt',getGCI(appInfo),'utf8')
 })

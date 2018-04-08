@@ -17,13 +17,13 @@ app.use(coins({
     'bSQK5GzNyWFJn7s1U5CpcNUZqQpen3BA': 20,
     'cSQK5GzNyWFJn7s1U5CpcNUZqQpen3BA':30
   }
-}))
+}));
 
 //If you listen on the port for tendermint and then hit slash, you can get a list of everything you can query from tendermint
-app.listen(3000).then(function(appInfo) {
+app.listen(3002).then(function(appInfo) {
     console.log(appInfo)
     fs.writeFileSync('gci_demo.txt',getGCI(appInfo),'utf8')
-})
+});
 
 
 //This returns the Glboal Chain Index for the current run
