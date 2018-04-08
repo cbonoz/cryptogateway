@@ -55,29 +55,34 @@ server.route({
 
         let sessionData = request.yar.get(SESSION_KEY);
 
-        if (!sessionData)
-          // First-time user - generate fresh session data
-          sessionData = { publishers: {} };
+        if (!sessionData) {
+            // First-time user - generate fresh session data
+            sessionData = {publishers: {}};
+        }
 
         console.log('Current session data', sessionData);
 
-        let thisPublisherEntry = sessionData.publishers[publisher];
+        const thisPublisherEntry = sessionData.publishers[publisher];
 
         // Reusable handler bits
 
-        let returnError = (errorDesc, err) => {
-          let msg = 'Server - ' + errorDesc + ' ' + JSON.stringify(err);
-          console.log(msg);
-          return h.response(msg).code(500);
+        const returnError = (type, err) => {
+            let msg = `Server - error ${type} for publisher ${publisher}: ${JSON.stringify(err)}`;
+            console.log(msg);
+            return h.response(msg).code(500);
         };
 
-        let createAddress = (accountId, firstVisit) => {
+        const createAddress = (accountId, firstVisit) => {
           return mybcoin.createAddress(accountId).then((paymentAddress) => {
             console.log('Server - generated payment address: ', JSON.stringify(paymentAddress));
-            sessionData.publishers[publisher] = { amount: amount, address: paymentAddress, requestedAt: Date.now() };
+            sessionData.publishers[publisher] = {
+              amount: amount,
+              address: paymentAddress,
+              requestedAt: Date.now()
+            };
             request.yar.set(SESSION_KEY, sessionData);
             return h.response({ sendPaymentTo: paymentAddress, firstVisit: firstVisit }).code(403);
-          }).catch((err) => returnError("error creating address", err));
+          }).catch((err) => returnError("creating address", err));
         }
 
         // Actual handler logic
@@ -90,7 +95,7 @@ server.route({
                     // Account does not exist - create it first, then the address
                     return mybcoin.createAccount(accountId)
                       .then(() => createAddress(accountId, true));
-                      .catch((err) => returnError("error creating account", err));
+                      .catch((err) => returnError("creating account", err));
                 } else {
                     // Account already exists - create the new address.
                     return createAddress(accountId, true);
@@ -102,7 +107,7 @@ server.route({
                 if (res) {
                     return h.response("Authorized").code(200);
                 } else {
-                    return h.response({ sendPaymentTo: thisPublisherEntry.address, firstVisit: false }).code(403);
+                    return h.response({ sendPaymentTo: thisPublisherEntry.address, firstVisit: false}).code(403);
                 }
             }).catch((err) => returnError("error checking balance", err));
         }
@@ -114,14 +119,15 @@ server.route({
     path: '/payments/list',
     handler: async function (request, h) {
         const sessionData = request.yar.get(SESSION_KEY);
-        if (!sessionData)
-          return h.response([]);
+        if (!sessionData) {
+            return h.response([]);
+        }
 
         let payments = [];
         Object.keys(sessionData.publishers).forEach(async (k) => {
-          let entry = sessionData.publishers[k];
-          let hasBalane = await mybcoin.hasBalance(entry.address, entry.amount);
-          payments.push({ publisher: k, amount: entry.amount, paid: hasBalance, requestedAt: entry.requestedAt });
+            let entry = sessionData.publishers[k];
+            let hasBalane = await mybcoin.hasBalance(entry.address, entry.amount);
+            payments.push({publisher: k, amount: entry.amount, paid: hasBalance, requestedAt: entry.requestedAt});
         });
 
         return h.response(payments).code(200);
@@ -138,20 +144,20 @@ async function start() {
         await server.register({
             plugin: require('yar'),
             options: {
-              storeBlank: false,
-              cookieOptions: {
-                  password: 'coingateway-super-secret-password',
-                  //isSecure: true, // Makes the cookie HTTPS only - enable in production
-                  isSecure: false,
-                  /*
-                  ttl: null, // can be millisec, this is per-session for easy testing
-                  isHttpOnly: true,
-                  encoding: 'base64json',
-                  clearInvalid: false, // remove invalid cookies
-                  strictHeader: false // don't allow violations of RFC 6265
-                  */
-              }
-          }
+                storeBlank: false,
+                cookieOptions: {
+                    password: 'coingateway-super-secret-password',
+                    //isSecure: true, // Makes the cookie HTTPS only - enable in production
+                    isSecure: false,
+                    /*
+                     ttl: null, // can be millisec, this is per-session for easy testing
+                     isHttpOnly: true,
+                     encoding: 'base64json',
+                     clearInvalid: false, // remove invalid cookies
+                     strictHeader: false // don't allow violations of RFC 6265
+                     */
+                }
+            }
         });
         await server.start();
     }
