@@ -48,7 +48,8 @@ server.route({
         }
 
         // Receive publisher name
-        const publisher = request.params.publisher;
+        let publisher = request.params.publisher;
+        publisher = publisher.replace(".", "");
         if (!publisher) {
             return h.response("Invalid  request, please specify publisher").code(400);
         }
@@ -83,18 +84,18 @@ server.route({
             request.yar.set(SESSION_KEY, sessionData);
             return h.response({ sendPaymentTo: paymentAddress, firstVisit: firstVisit }).code(403);
           }).catch((err) => returnError("creating address", err));
-        }
+        };
 
         // Actual handler logic
 
-        if (!thisPublisherEntry) {
+        if (!thisPublisherEntry || !thisPublisherEntry.address) {
             // First time user sending this, generate a publisher accout (if needed) and a payment address for the user
             const accountId = publisher;
             return mybcoin.getAccount(accountId).then((res) => {
                 if (!res) {
                     // Account does not exist - create it first, then the address
                     return mybcoin.createAccount(accountId)
-                      .then(() => createAddress(accountId, true));
+                      .then(() => createAddress(accountId, true))
                       .catch((err) => returnError("creating account", err));
                 } else {
                     // Account already exists - create the new address.
