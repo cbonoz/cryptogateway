@@ -6,13 +6,11 @@ import {Button, Grid, Row, Col} from 'react-bootstrap';
 import gatewayLogo from '../assets/cryptogateway.png';
 import businessLogo from '../assets/your_business.png';
 
-import api from '../helpers/api';
 import WallAnimation from "./WallAnimation";
 
 const Home = createReactClass({
 
     componentWillMount() {
-        console.log(api.BASE_URL);
         this.setState({
             files: [],
             blockFiles: []

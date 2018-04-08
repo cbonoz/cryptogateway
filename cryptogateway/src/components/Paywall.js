@@ -1,7 +1,6 @@
 import React from 'react';
 import createReactClass from 'create-react-class';
 import {Button, Modal, OverlayTrigger, Popover, Tooltip} from "react-bootstrap";
-import Footer from "./Footer";
 
 const BASE_URL = "http://localhost:8000";
 const DEFAULT_BLUR = 5;
@@ -31,8 +30,13 @@ const Paywall = createReactClass({
         const url = `${BASE_URL}/validate-pay/${amount}`;
         console.log('checkAuth', url);
 
-        fetch(url).then(function (response) {
+        fetch(url, {
+            mode: 'no-cors' // 'cors' by default
+        }).then(function (response) {
+            console.log('response', response)
             return response.json();
+        }).catch((error) => {
+            console.log('error', error)
         }).then(function (res) {
             console.log('validate success', res);
             // Ok to proceed (remove the blur).
@@ -86,8 +90,8 @@ const Paywall = createReactClass({
                 </div>
 
                 <Modal show={this.state.showModal}
-                  // onHide={this.handleClose}
-                       >
+                    // onHide={this.handleClose}
+                >
                     <Modal.Header>
                         <Modal.Title><b>Producing Quality Content Costs Money.</b></Modal.Title>
                     </Modal.Header>
@@ -101,26 +105,28 @@ const Paywall = createReactClass({
 
                         <p>to continue reading.</p>
 
-                        <Button bsStyle="success" className="wallet-button" onClick={() => {self.handleClose()}}>Go to Wallet</Button>
+                        <Button bsStyle="success" className="wallet-button" onClick={() => {
+                            self.handleClose()
+                        }}>Go to Wallet</Button>
 
                         <hr />
 
                         {/*<h4>Popover in a modal</h4>*/}
                         {/*<p>*/}
-                            {/*there is a{' '}*/}
-                            {/*<OverlayTrigger overlay={popover}>*/}
-                                {/*<a href="#popover">popover</a>*/}
-                            {/*</OverlayTrigger>{' '}*/}
-                            {/*here*/}
+                        {/*there is a{' '}*/}
+                        {/*<OverlayTrigger overlay={popover}>*/}
+                        {/*<a href="#popover">popover</a>*/}
+                        {/*</OverlayTrigger>{' '}*/}
+                        {/*here*/}
                         {/*</p>*/}
 
                         {/*<h4>Tooltips in a modal</h4>*/}
                         {/*<p>*/}
-                            {/*there is a{' '}*/}
-                            {/*<OverlayTrigger overlay={tooltip}>*/}
-                                {/*<a href="#tooltip">tooltip</a>*/}
-                            {/*</OverlayTrigger>{' '}*/}
-                            {/*here*/}
+                        {/*there is a{' '}*/}
+                        {/*<OverlayTrigger overlay={tooltip}>*/}
+                        {/*<a href="#tooltip">tooltip</a>*/}
+                        {/*</OverlayTrigger>{' '}*/}
+                        {/*here*/}
                         {/*</p>*/}
 
 
