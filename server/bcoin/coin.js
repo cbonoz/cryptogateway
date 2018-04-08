@@ -41,11 +41,26 @@ const library = (function () {
     //     "confirmed": "8150.0"
     // }
     async function hasBalance(address, requiredBalance) {
-        const receiveAddress = db.get('accounts').find({address: address}).value();
-        const response = httpWallet.getBalance(receiveAddress['name']);
-        console.log(response);
-        const currentBalance = response['unconfirmed']; // get the unconfirmed balance (to include pending).
-        return currentBalance >= requiredBalance;
+        const account = db.get('addresses').find({address: address}).value();
+        // console.log('account', account);
+        const accountId = account['name'];
+
+        let history = await getAccountInputHistory(accountId);
+        console.log('history', history);
+        const transactions = [];
+        history = history.map((walletHistory) => {
+            const inputs = walletHistory.inputs || [];
+            inputs.filter((h) => {
+                return h['address'] === address;
+            });
+        });
+        let total = 0;
+        transactions.map((t) => {
+            total += t['value'];
+        });
+        console.log('balance', total, history, requiredBalance, accountId);
+        requiredBalance = parseFloat(requiredBalance);
+        return total >= requiredBalance;
     }
 
     // {
@@ -78,7 +93,7 @@ const library = (function () {
         };
         const account = await httpWallet.createAccount(accountId, options);
         db.get('accounts').push(account).write();
-        console.log(account);
+        // console.log(account);
         return account['name'];
     }
 
@@ -105,8 +120,57 @@ const library = (function () {
     // }
     async function getAccount(accountId) {
         const accountInfo = await client.getAccount(OWNER_WALLET_ID, accountId);
-        console.log(accountInfo);
+        // console.log(accountInfo);
         return accountInfo;
+    }
+
+    // [
+    //     {
+    //         "wid": 1,
+    //         "id": "primary",
+    //         "hash": "f5968051ce275d89b7a6b797eb6e6b081243ecf027872fc6949fae443e21b858",
+    //         "height": -1,
+    //         "block": null,
+    //         "time": 0,
+    //         "mtime": 1503690544,
+    //         "date": "2017-08-25T19:49:04Z",
+    //         "size": 226,
+    //         "virtualSize": 226,
+    //         "fee": 0,
+    //         "rate": 0,
+    //         "confirmations": 0,
+    //         "inputs": [
+    //             {
+    //                 "value": 0,
+    //                 "address": "mp2w1u4oqZnHDd1zDeAvCTX9B3SaFsUFQx",
+    //                 "path": null
+    //             }
+    //         ],
+    //         "outputs": [
+    //             {
+    //                 "value": 100000,
+    //                 "address": "myCkrhQbJwqM8wKi9YuhyTjN3pukNuWxZ9",
+    //                 "path": {
+    //                     "name": "default",
+    //                     "account": 0,
+    //                     "change": false,
+    //                     "derivation": "m/0'/0/3"
+    //                 }
+    //             },
+    //             {
+    //                 "value": 29790920,
+    //                 "address": "mqNm1rSYVqD23Aj6fkupApuSok9DNZAeBk",
+    //                 "path": null
+    //             }
+    //         ],
+    //         "tx": "0100000001ef8a38cc946c57634c2db05fc298bf94f5c88829c5a6e2b0610fcc7b38a9264f010000006b483045022100e98db5ddb92686fe77bb44f86ce8bf6ff693c1a1fb2fb434c6eeed7cf5e7bed4022053dca3980a902ece82fb8e9e5204c26946893388e4663dbb71e78946f49dd0f90121024c4abc2a3683891b35c04e6d40a07ee78e7d86ad9d7a14265fe214fe84513676ffffffff02a0860100000000001976a914c2013ac1a5f6a9ae91f66e71bbfae4cc762c2ca988acc892c601000000001976a9146c2483bf52052e1125fc75dd77dad06d65b70a8288ac00000000"
+    //     },
+    //     ...
+    // ]
+    async function getAccountInputHistory(accountId) {
+        const response = await httpWallet.getHistory(accountId);
+        console.log('input history', response);
+        return response;
     }
 
     // {
@@ -129,17 +193,19 @@ const library = (function () {
         const receiveAddress = await httpWallet.createAddress(accountId);
         // Add a new live account to the local db.k
         db.get('addresses').push(receiveAddress).write();
-        const text = JSON.stringify(receiveAddress);
-        console.log('receiveAddress', accountName, text);
+        // const text = JSON.stringify(receiveAddress);
+        console.log('receiveAddress', accountId);
         return receiveAddress['address'];
     }
 
     return {
         getAccount: getAccount,
+        getAccountInputHistory: getAccountInputHistory,
         createAccount: createAccount,
         createAddress: createAddress,
         hasBalance: hasBalance,
-        httpWallet: httpWallet
+        httpWallet: httpWallet,
+        db: db
     }
 
 })();

@@ -70,7 +70,7 @@ const WallAnimation = createReactClass({
             return [p[0] + PARTICLE_SPEED, p[1]]
         });
         self.setState({particles: newParticles});
-        console.log('particles: ', newParticles);
+        // console.log('particles: ', newParticles);
 
         self.updateWallHeight();
 
@@ -83,7 +83,7 @@ const WallAnimation = createReactClass({
     updateWallHeight() {
         const newHeight = Math.min(this.state.wallHeight + 1, this.state.height);
         this.setState({wallHeight: newHeight});
-        console.log('wallHeight', this.state.wallHeight, this.state.height)
+        // console.log('wallHeight', this.state.wallHeight, this.state.height)
     },
 
     componentWillMount() {

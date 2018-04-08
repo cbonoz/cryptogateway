@@ -27,7 +27,7 @@ class App extends Component {
 
         return (
             <div className="App">
-                <Paywall amount={.0001} amountUnits={"Bitcoin"} customerDomain="www.cryptogateway.com">
+                <Paywall amount={10} amountUnits={"Satoshi"} customerDomain="www.cryptogateway.com">
                     {/*excludedUrls={["/"]}>*/}
                     <Navbar collapseOnSelect>
                         <Navbar.Header>
@@ -46,7 +46,7 @@ class App extends Component {
                                     Articles
                                 </NavItem>
                                 <NavItem eventKey={3} href="/about">
-                                    About Us
+                                    How it Works
                                 </NavItem>
                             </Nav>
                         </Navbar.Collapse>

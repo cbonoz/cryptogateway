@@ -2,12 +2,13 @@
 
 const Hapi = require('hapi');
 const mybcoin = require('./bcoin/coin');
+//const mybcoin = require('./bcoin/coin_mock');
 const SERVER_PORT = 3001;
 
 const server = Hapi.server({
     host: 'localhost',
     port: SERVER_PORT,
-    routes: {cors: {origin: ['*']}}
+    routes: {cors: {origin: ['*'], credentials: true}}
 });
 
 const SESSION_KEY = 'cgpayment';
@@ -37,12 +38,25 @@ function createJson(msg) {
     return {message: msg};
 }
 
+function btoa(s) {
+    if (s) {
+        return Buffer.from(s).toString('base64');
+    }
+    return '';
+}
+
+function atob(s) {
+    if (s) {
+        return Buffer.from(s, 'base64').toString();
+    }
+    return '';
+}
+
 // Add our validate pay API route
 server.route({
     method: 'GET',
     path: '/validate-pay/{publisher}/{amount}',
     handler: async function (request, h) {
-
         // *** Parameter validation ***
         console.log('validate-pay');
 
@@ -59,19 +73,13 @@ server.route({
             return h.response(createJson("Invalid request, please specify publisher")).code(400);
         }
 
-        let sessionData = request.yar.get(SESSION_KEY);
-
-        if (!sessionData) {
-            // First-time user - generate fresh session data
-            sessionData = {publishers: {}};
-        }
+        const sessionData = request.yar.get(SESSION_KEY) || {publishers: {}};
 
         console.log('Current session data', sessionData);
 
         const thisPublisherEntry = sessionData.publishers[publisher];
 
         // Reusable handler bits
-
         const returnError = (type, err) => {
             let msg = `Server - error ${type} for publisher ${publisher}: ${JSON.stringify(err)}`;
             console.log(msg);
@@ -87,7 +95,9 @@ server.route({
               requestedAt: Date.now()
             };
             request.yar.set(SESSION_KEY, sessionData);
-            return h.response({ sendPaymentTo: paymentAddress, firstVisit: true }).code(403);
+            const data = { sendPaymentTo: paymentAddress, firstVisit: true };
+            console.log('returning data', data);
+            return h.response(data).code(403);
           }).catch((err) => returnError("creating address", err));
         };
 
@@ -109,11 +119,14 @@ server.route({
             }).catch((err) => returnError("getting account", err));
         } else {
             // Entry exists and hence payment address is defined, check for sufficient balance at that address.
-            return mybcoin.hasBalance(thisPublisherEntry.address, thisPublisherEntry.amount).then((res) => {
+            console.log('publisher', thisPublisherEntry);
+            return mybcoin.hasBalance(thisPublisherEntry['address'], thisPublisherEntry['amount']).then((res) => {
                 if (res) {
+                    console.log('hasBalance', res);
                     return h.response(createJson("Authorized")).code(200);
                 } else {
-                    return h.response({ sendPaymentTo: thisPublisherEntry.address, firstVisit: false}).code(403);
+                    console.log('sending 403', res);
+                    return h.response({ sendPaymentTo: thisPublisherEntry['address'], firstVisit: false}).code(403);
                 }
             }).catch((err) => returnError("checking balance", err));
         }
@@ -132,7 +145,7 @@ server.route({
         let payments = [];
         Object.keys(sessionData.publishers).forEach(async (k) => {
             let entry = sessionData.publishers[k];
-            let hasBalane = await mybcoin.hasBalance(entry.address, entry.amount);
+            let hasBalance = await mybcoin.hasBalance(entry.address, entry.amount);
             payments.push({publisher: k, amount: entry.amount, paid: hasBalance, requestedAt: entry.requestedAt});
         });
 
@@ -152,11 +165,11 @@ async function start() {
             options: {
                 storeBlank: false,
                 cookieOptions: {
-                    password: 'coingateway-super-secret-password',
+                    password: 'crypto-gateway-super-long-secret-password-string',
+                    ttl: null, // can be millisec, this is per-session for easy testing
                     //isSecure: true, // Makes the cookie HTTPS only - enable in production
                     isSecure: false,
                     /*
-                     ttl: null, // can be millisec, this is per-session for easy testing
                      isHttpOnly: true,
                      encoding: 'base64json',
                      clearInvalid: false, // remove invalid cookies
