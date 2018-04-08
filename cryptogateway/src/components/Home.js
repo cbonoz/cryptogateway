@@ -45,7 +45,7 @@ const Home = createReactClass({
                     </Col>
                     <Col xs={12} md={7}>
                         {/*TODO: readd*/}
-                        {/*<WallAnimation/>*/}
+                        <WallAnimation/>
                     </Col>
                     <Col xs={12} md={3}>
                         <img src={businessLogo} className="business-logo"/>
@@ -77,14 +77,6 @@ const Home = createReactClass({
                             <img className="img-responsive centered" src={cosmosLogo}/>
                         </Col>
                         <Col xs={2} md={2}></Col>
-                    </Row>
-                    <Row className="show-grid">
-                        <Col xs={12} md={5}>
-                            {/*Column 1 content*/}
-                        </Col>
-                        <Col xs={12} md={7}>
-                            {/*Column 2 content*/}
-                        </Col>
                     </Row>
                 </Grid>
 
