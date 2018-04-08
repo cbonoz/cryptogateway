@@ -14,6 +14,19 @@ Cryptogateway is a free website plugin which wraps any of your desired content a
 
 For each customer, an account will automatically be generated which will store any funds sent to you by your website visitors. Each customer will be mapped to a unique address which is used to verify whether they have paid for website access or not. Once the user has paid, he or she will automatically be granted access to the content.
 
+### Plugin Component (React)
+
+<pre>
+     <Paywall
+                    disabled={false} // defaults to false (enabled)
+                    onClick={false} // defaults to false (auto blocks)
+                    amount={.0001} // amount to pay
+                         amountUnits={"Bitcoin"} // units of payment
+                         domain="www.cryptogateway.com" // domain of website
+                         excludedUrls={["/"]} // defaults to [], will disabled on these website paths.
+                         >
+ </pre>
+
 Steps for install:
 <ol>
     <li>Create account on Cryptogateway.com - registering your domain name.

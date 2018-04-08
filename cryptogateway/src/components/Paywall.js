@@ -11,15 +11,21 @@ const Paywall = createReactClass({
         this.setState({
             paymentReceived: false,
             showModal: false,
-            blur: true,
+            blur: 0,
             sendPaymentTo: null,
         });
 
+        const onClick = this.props.onClick === true;
+        const disabled = this.props.disabled === true;
         const excludedUrls = this.props.excludedUrls || [];
         console.log(window.location.pathname, excludedUrls);
-        if (!excludedUrls.includes(window.location.pathname)) {
-            this.setState({authInterval: setInterval(this.checkAuth, this.props.authInterval || 100000)});
-            this.checkAuth();
+        if (!disabled && !excludedUrls.includes(window.location.pathname)) {
+            if (onClick) {
+                this.setState({blur: this.props.blur || DEFAULT_BLUR});
+            } else {
+                this.setState({authInterval: setInterval(this.checkAuth, this.props.authInterval || 100000)});
+                this.checkAuth();
+            }
         }
     },
 
@@ -90,6 +96,13 @@ const Paywall = createReactClass({
         setTimeout(self.handleClose, 1000);
     },
 
+    checkAuthManual() {
+        console.log('checkAuthManual');
+        if (this.props.onClick === true) {
+            this.checkAuth();
+        }
+    },
+
     handleClose() {
         this.setState({blur: 0, showModal: false})
     },
@@ -110,7 +123,7 @@ const Paywall = createReactClass({
 
         return (
             <div>
-                <div style={{WebkitFilter: `blur(${blur}px) saturate(2)`}}>
+                <div style={{WebkitFilter: `blur(${blur}px) saturate(2)`, cursor: 'pointer'}} onClick={() => self.checkAuthManual()}>
                     {this.props.children}
                 </div>
 

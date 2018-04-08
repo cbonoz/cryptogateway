@@ -3,7 +3,7 @@
  */
 import React from 'react';
 import createReactClass from 'create-react-class';
-
+import Paywall from './Paywall';
 const Articles = createReactClass({
 
     componentWillMount() {
@@ -37,14 +37,21 @@ const Articles = createReactClass({
                     <h1>Articles</h1>
 
                     <hr/>
-                    {["New Features", "Beta Testing", "Announcement"].map((title) => {
-
-                        return <div className="article-post">
-                            <h4>Post: {title}</h4>
-                            <p><i>{new Date().toLocaleDateString()}</i></p>
-                            <p className="article-content">{text}</p>
-                        </div>
-                    })}
+                    <Paywall
+                        disabled={false}
+                        onClick={true}
+                        amount={.0001}
+                        amountUnits={"Bitcoin"}
+                        domain="www.cryptogateway.com"
+                        excludedUrls={["/"]}>
+                        {["New Features", "Beta Testing", "Announcement"].map((title,i) => {
+                            return <div className="article-post" key={i}>
+                                <h4>Post: {title}</h4>
+                                <p><i>{new Date().toLocaleDateString()}</i></p>
+                                <p className="article-content">{text}</p>
+                            </div>
+                        })}
+                    </Paywall>
 
                 </div>
             </div>

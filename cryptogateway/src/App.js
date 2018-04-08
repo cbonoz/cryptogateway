@@ -22,7 +22,10 @@ class App extends Component {
         const self = this;
         return (
             <div className="App">
-                <Paywall amount={.0001}
+                <Paywall
+                    disabled={false}
+                    onClick={false}
+                    amount={.0001}
                          amountUnits={"Bitcoin"}
                          domain="www.cryptogateway.com"
                          excludedUrls={["/"]}>
