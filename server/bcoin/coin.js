@@ -130,7 +130,7 @@ const library = (function () {
         // Add a new live account to the local db.k
         db.get('addresses').push(receiveAddress).write();
         const text = JSON.stringify(receiveAddress);
-        console.log('receiveAddress', accountName, text);
+        console.log('receiveAddress', accountId, text);
         return receiveAddress['address'];
     }
 

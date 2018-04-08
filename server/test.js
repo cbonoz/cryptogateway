@@ -8,4 +8,4 @@ async function test() {
     return receiveAddress;
 }
 
-mybcoin.createAccount(accountName).then((res) => console.log('res', res)).catch((err) => {console.error('err', err)});
+mybcoin.createAddress(accountName).then((res) => console.log('res', res)).catch((err) => {console.error('err', err)});
