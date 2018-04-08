@@ -102,7 +102,9 @@ server.route({
               requestedAt: Date.now()
             };
             request.yar.set(SESSION_KEY, sessionData);
-            return h.response({ sendPaymentTo: paymentAddress, firstVisit: true }).code(403);
+            const data = { sendPaymentTo: paymentAddress, firstVisit: true };
+            console.log('returning data', data);
+            return h.response(data).code(403);
           }).catch((err) => returnError("creating address", err));
         };
 

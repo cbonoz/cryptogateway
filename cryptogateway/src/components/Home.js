@@ -45,7 +45,7 @@ const Home = createReactClass({
                     </Col>
                     <Col xs={12} md={7}>
                         {/*TODO: readd*/}
-                        <WallAnimation/>
+                        {/*<WallAnimation/>*/}
                     </Col>
                     <Col xs={12} md={3}>
                         <img src={businessLogo} className="business-logo"/>
@@ -64,19 +64,19 @@ const Home = createReactClass({
 
                 <Grid>
                     <Row className="show-grid coin-row">
-                        <Col xs={1} md={2}></Col>
-                        <Col xs={10} md={2}>
-                            <img className="img-responsive" src={bitcoinLogo}/>
+                        <Col xs={2} md={2}></Col>
+                        <Col xs={8} md={2}>
+                            <img className="img-responsive centered" src={bitcoinLogo}/>
                         </Col>
                         <Col xs={0} md={1}></Col>
-                        <Col xs={10} md={2}>
-                            <img className="img-responsive" src={bcoinLogo}/>
+                        <Col xs={8} md={2}>
+                            <img className="img-responsive centered" src={bcoinLogo}/>
                         </Col>
                         <Col xs={0} md={1}></Col>
-                        <Col xs={10} md={2}>
-                            <img className="img-responsive" src={cosmosLogo}/>
+                        <Col xs={8} md={2}>
+                            <img className="img-responsive centered" src={cosmosLogo}/>
                         </Col>
-                        <Col xs={1} md={2}></Col>
+                        <Col xs={2} md={2}></Col>
                     </Row>
                     <Row className="show-grid">
                         <Col xs={12} md={5}>

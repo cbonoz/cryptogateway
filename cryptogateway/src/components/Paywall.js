@@ -22,6 +22,13 @@ const Paywall = createReactClass({
         }
     },
 
+    handleErrors(response) {
+        if (!response.ok) {
+            throw Error(response);
+        }
+        return response;
+    },
+
     checkAuth() {
         const self = this;
         // units in satoshi.
@@ -32,37 +39,39 @@ const Paywall = createReactClass({
         const url = `${BASE_URL}/validate-pay/${publisher}/${amount}`;
         console.log('checkAuth', url);
 
-        fetch(url, {header: {
-            'Access-Control-Allow-Origin':'*',
-        }}).then(function (response) {
-            console.log('response', response);
-            return response.json();
-        }).catch((error) => {
-            console.log('error', error)
-        }).then(function (res) {
-            console.log('validate success', res);
-            // Ok to proceed (remove the blur).
-            self.handleClose();
-        }).catch((err) => {
-            console.error('validate failure', err);
-            const status = err.response ? err.response.status : 500;
-            const data = err.response ? err.response.data : {'sendPaymentTo': '<FAKE ADDRESS>'};
-            console.log('status', status);
-            switch (status) {
-                case 500:
-                case 404:
-                case 400:
-                case 403:
-                    // Error from payment server, show the dialog.
-                    const sendPaymentTo = data['sendPaymentTo'];
-                    self.setState({sendPaymentTo: sendPaymentTo});
-                    setTimeout(self.handleShow, 1000);
-                    break;
-                default:
-                    // Close the dialog.
-                    self.handleClose();
-                    break;
+        fetch(url, {
+            header: {
+                'Access-Control-Allow-Origin': '*',
             }
+        })
+            .then(response =>
+                response.json().then(data => ({
+                    data: data,
+                    status: response.status
+                })))
+            .then(function (res) {
+                console.log('validate success', res);
+                const status = res.status;
+                const data = res.data;
+                console.log('status', status);
+                switch (status) {
+                    case 500:
+                    case 404:
+                    case 400:
+                    case 403:
+                        // Error from payment server, show the dialog.
+                        const sendPaymentTo = data['sendPaymentTo'];
+                        self.setState({sendPaymentTo: sendPaymentTo});
+                        setTimeout(self.handleShow, 1000);
+                        break;
+                    default:
+                        // Close the dialog.
+                        self.handleClose();
+                        break;
+                }
+            }).catch((err) => {
+            console.error('validate failure', JSON.stringify(err));
+            self.handleClose();
         });
     },
 
@@ -99,11 +108,11 @@ const Paywall = createReactClass({
                     </Modal.Header>
                     <Modal.Body>
 
-                        <p>Support quality journalism - no subscription necessary.</p>
+                        <h4>Support quality journalism - no subscription necessary.</h4>
 
                         <p>Send <b>{self.props.amount}</b> {self.props.amountUnits} to address:</p>
 
-                        <h3>{self.state.sendPaymentTo}</h3>
+                        <h3><b>{self.state.sendPaymentTo}</b></h3>
 
                         <p>to continue reading.</p>
 
