@@ -15,6 +15,7 @@
   "author": "Chris Buonocore",
   "license": "ISC",
   "dependencies": {
+    "coins": "^2.4.0",
     "hapi": "^17.3.1",
     "lotion": "^0.1.17",
     "lowdb": "^1.0.0"
