@@ -57,7 +57,6 @@ server.route({
     method: 'GET',
     path: '/validate-pay/{publisher}/{amount}',
     handler: async function (request, h) {
-
         // *** Parameter validation ***
         console.log('validate-pay');
 
@@ -74,19 +73,13 @@ server.route({
             return h.response(createJson("Invalid request, please specify publisher")).code(400);
         }
 
-        let sessionData = request.yar.get(SESSION_KEY);
-
-        if (!sessionData) {
-            // First-time user - generate fresh session data
-            sessionData = {publishers: {}};
-        }
+        const sessionData = request.yar.get(SESSION_KEY) || {publishers: {}};
 
         console.log('Current session data', sessionData);
 
         const thisPublisherEntry = sessionData.publishers[publisher];
 
         // Reusable handler bits
-
         const returnError = (type, err) => {
             let msg = `Server - error ${type} for publisher ${publisher}: ${JSON.stringify(err)}`;
             console.log(msg);
@@ -169,7 +162,7 @@ async function start() {
             options: {
                 storeBlank: false,
                 cookieOptions: {
-                    password: 'coingateway-super-secret-password',
+                    password: 'crypto-gateway-super-long-secret-password-string',
                     ttl: null, // can be millisec, this is per-session for easy testing
                     //isSecure: true, // Makes the cookie HTTPS only - enable in production
                     isSecure: false,
