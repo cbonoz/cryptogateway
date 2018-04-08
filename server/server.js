@@ -49,7 +49,7 @@ server.route({
 
         // Receive publisher name
         let publisher = request.params.publisher;
-        publisher = publisher.replace(/./g, "");
+        publisher = publisher.replace(/\./g, "");
         if (!publisher) {
             return h.response("Invalid  request, please specify publisher").code(400);
         }
