@@ -1125,6 +1125,10 @@ graceful-fs@~3.0.2:
   dependencies:
     natives "^1.1.0"
 
+hapi-cors-headers@^1.0.3:
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/hapi-cors-headers/-/hapi-cors-headers-1.0.3.tgz#856b0a9870f435249492c5a52d2744317a8cc1fd"
+
 hapi@^17.3.1:
   version "17.3.1"
   resolved "https://registry.yarnpkg.com/hapi/-/hapi-17.3.1.tgz#d99679d208389e12a13a91f55932b32ab7dceff1"

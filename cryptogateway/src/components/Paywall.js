@@ -20,6 +20,15 @@ const Paywall = createReactClass({
             this.setState({authInterval: setInterval(this.checkAuth, this.props.authInterval || 100000)});
             this.checkAuth();
         }
+
+        fetch(`${BASE_URL}/hello`, {header: {
+            'Access-Control-Allow-Origin':'*',
+        }}).then(function (response) {
+            console.log('response', response)
+            return response.json();
+        }).catch((error) => {
+            console.log('error', error)
+        })
     },
 
     checkAuth() {
@@ -30,9 +39,9 @@ const Paywall = createReactClass({
         const url = `${BASE_URL}/validate-pay/${amount}`;
         console.log('checkAuth', url);
 
-        fetch(url, {
-            mode: 'no-cors' // 'cors' by default
-        }).then(function (response) {
+        fetch(url, {header: {
+            'Access-Control-Allow-Origin':'*',
+        }}).then(function (response) {
             console.log('response', response)
             return response.json();
         }).catch((error) => {

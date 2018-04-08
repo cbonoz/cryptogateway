@@ -1,6 +1,7 @@
 'use strict';
 
 const Hapi = require('hapi');
+const corsHeaders = require('hapi-cors-headers');
 const mybcoin = require('./bcoin/coin');
 const SERVER_PORT = 8000;
 
@@ -8,6 +9,8 @@ const server = Hapi.server({
     host: 'localhost',
     port: SERVER_PORT
 });
+
+server.ext('onPreResponse', corsHeaders)
 
 const COOKIE_KEY = 'cgpayment';
 const ALLOWED_VIEWS = 0;
@@ -30,6 +33,14 @@ server.state(COOKIE_KEY, {
     encoding: 'base64json',
     clearInvalid: false, // remove invalid cookies
     strictHeader: true // don't allow violations of RFC 6265
+});
+
+server.route({
+    method: 'GET',
+    path: '/hello',
+    handler: function (request, h) {
+        return h.response("Hello").code(200);
+    }
 });
 
 // Add our validate pay API route
