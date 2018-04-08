@@ -20,7 +20,7 @@ const client = new Client({
 id='primaryId'
 passphrase='passphrase'
 witness='false'
-accountKey='tpubDDh2XgSds1vBbeVgye88gsGQeCityoywRndtyrXcmvWqCgsFUyUKwzeDv8HiJhu9fC8jRAFMqxr4jj8eRTNTycmMao5wmsAScVf4jSMdPYZ'
+accountKey='tpubDDh2XgSds1vBbeVgye88gsGQeCityoywRndtyrXcmvWqCgsFUyUKwzeDv8HiJhu9fC8jRAFMqxr4jj8eRTNTycmMao5wmsAScVf4jSMdPYZ';
 
 const options = {
     id: id,
@@ -31,11 +31,11 @@ const options = {
 };
 
 (async() => {
-    const newWallet = await client.createWallet(options)
+    const newWallet = await client.createWallet(options);
     // Save this information.
-    console.log('created owner wallet', newWallet)
+    console.log('created owner wallet', newWallet);
     const walletInfo = JSON.stringify(newWallet);
-    const walletFile = "./bcoin/wallet.json";
+    const walletFile = "./bcoin/crypto_gateway_wallet.json";
     fs.writeFile(walletFile, walletInfo, function(err) {
         if(err) {
             return console.log(err);

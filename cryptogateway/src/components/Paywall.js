@@ -2,7 +2,7 @@ import React from 'react';
 import createReactClass from 'create-react-class';
 import {Button, Modal, OverlayTrigger, Popover, Tooltip} from "react-bootstrap";
 
-const BASE_URL = "http://localhost:8000";
+const BASE_URL = "http://localhost:3001";
 const DEFAULT_BLUR = 5;
 
 const Paywall = createReactClass({
@@ -26,14 +26,15 @@ const Paywall = createReactClass({
         const self = this;
         // units in satoshi.
         const amount = self.props.amount || 500;
+        const domain = self.props.customerDomain || 'www.example.com'
         const amountUnits = self.props.amountUnits || "Satoshi";
-        const url = `${BASE_URL}/validate-pay/${amount}`;
+        const url = `${BASE_URL}/validate-pay/${domain}/${amount}`;
         console.log('checkAuth', url);
 
-        fetch(url, {
-            mode: 'no-cors' // 'cors' by default
-        }).then(function (response) {
-            console.log('response', response)
+        fetch(url, {header: {
+            'Access-Control-Allow-Origin':'*',
+        }}).then(function (response) {
+            console.log('response', response);
             return response.json();
         }).catch((error) => {
             console.log('error', error)
