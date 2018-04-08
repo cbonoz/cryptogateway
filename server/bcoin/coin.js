@@ -1,6 +1,6 @@
 const library = (function () {
     const uuidv4 = require('uuid/v4');
-    const bcoin = require('bcoin')
+    const bcoin = require('bcoin');
     const Client = bcoin.http.Client;
     const Wallet = bcoin.http.Wallet;
 

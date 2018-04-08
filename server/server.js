@@ -10,7 +10,7 @@ const server = Hapi.server({
 });
 
 const COOKIE_KEY = 'cgpayment';
-const ALLOWED_VIEWS = 3;
+const ALLOWED_VIEWS = 0;
 
 // ---------------------------------
 // Blockchain interaction functions
