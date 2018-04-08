@@ -2,6 +2,7 @@
 
 const Hapi = require('hapi');
 const mybcoin = require('./bcoin/coin');
+const cosmos = require('./cosmos_wallet');
 //const mybcoin = require('./bcoin/coin_mock');
 const SERVER_PORT = 3001;
 
@@ -13,7 +14,7 @@ const server = Hapi.server({
 
 const SESSION_KEY = 'cgpayment';
 
-const GCI = 'TODO';
+const GCI = cosmos.loadGCI();
 
 // ----------------------
 // Client-facing portion 
@@ -58,7 +59,7 @@ function atob(s) {
     return '';
 }
 
-// Validate pay API call (bcoin-based)
+// Validate pay API call (bcoin-based - phase 1)
 server.route({
     method: 'GET',
     path: '/validate-pay/{publisher}/{amount}',
@@ -160,14 +161,20 @@ server.route({
     }
 });
 
-/// *** MediaCredit Loading API ***
+/// *** CryptoGateway Loading API: Micro-transactions via Cosmos - Phase 2 ***
 
 // *** Cosmos wallet ***
 
 const hasCosmosAddressInSession = (sessionData) => (sessionData && sessionData.wallet && sessionData.wallet.cosmosAddress);
 
+const createCosmosAddress = async (folder) => {
+  return await cosmos.getAddressFromSecretKeyPath(GCI, await cosmos.newVisitorSecretKeyFolder(GCI, folder));
+};
+
 const MEDIA_CREDIT_ACCOUNT = "MediaCredit";
 
+const DEMO_PUBLISHER_PATH_FOLDER = '0';
+const DEMO_USER_PATH_FOLDER = '1';
 
 // Show the MediaCredit balance and wallet info. Use this to get the bitcoin address to charge, and know your current balance
 server.route({
@@ -184,8 +191,7 @@ server.route({
         const sessionData = request.yar.get(SESSION_KEY);
         if (!hasCosmosAddressInSession(sessionData)) {
           // 1. Generate a new cosmos address
-          // TODO
-          let cosmosAddress = "TODO";
+          let cosmosAddress = createCosmosAddress(DEMO_USER_PATH_FOLDER);
 
           // 2. Generate bitcoin address for the user to charge bitcoin into
           let bitcoinAddress =
@@ -205,7 +211,6 @@ server.route({
 
         // We have a cosmos address - return balance (also return the bitcoin charge address in case the user wants to add more funds)
 
-        // TODO integrate with Cosmos code
         return h.response({
           mediaCreditAddress: sessionData.wallet.mediaCreditAddress,
           balance: await cosmos.loadBalance(GCI, sessionData.wallet.cosmosAddress)
@@ -233,8 +238,8 @@ server.route({
             return h.response(createJson("Invalid request, please specify publisher")).code(400);
         }
 
-        // TODO integrate with Cosmos code
-        let success = await cosmos.pay(GCI, sessionData.cosmos.userAddress, publisher, amount);
+        let publisherAddress = createCosmosAddress(DEMO_PUBLISHER_PATH_FOLDER);
+        let success = await cosmos.runTransaction(GCI, DEMO_USER_PATH_FOLDER, publisherAddress, amount);
         return h.response({ success: success }).code((success) ? 200 : 400);
     }
 });
