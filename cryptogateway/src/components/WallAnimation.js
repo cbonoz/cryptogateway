@@ -13,10 +13,6 @@ const PARTICLE_INTERVAL = 600;
 const PARTICLE_SPEED = 3;
 
 class ColoredRect extends React.Component {
-    //
-    // state = {
-    //     color: 'green',
-    // };
 
     componentWillMount() {
         this.setState({
@@ -68,10 +64,7 @@ const WallAnimation = createReactClass({
             return [p[0] + PARTICLE_SPEED, p[1]]
         });
         self.setState({particles: newParticles});
-        // console.log('particles: ', newParticles);
-
         self.updateWallHeight();
-
     },
 
     resetAnimation() {
