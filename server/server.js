@@ -69,15 +69,39 @@ server.route({
 
         if (!payload.sendPaymentTo) {
             // First time user sending this, generate a 403.
-            mybcoin.createAddress().then((paymentAddress) => {
-                console.log('back in server', JSON.stringify(paymentAddress));
-                payload.sendPaymentTo = paymentAddress;
-                return h.response(payload).code(403).state(COOKIE_KEY, payload);
-            }).catch((err) => {
-                const msg = JSON.stringify(err);
-                console.error('error creating address', msg);
-                return h.response(msg).code(500);
+            const accountId = "customerDomain";
+            mybcoin.getAccount(accountId).then((res) => {
+                if (!res) {
+                    // Account does not exist
+                    mybcoin.createAccount(accountId).then((newAccountId) => {
+                        mybcoin.createAddress(newAccountId).then((paymentAddress) => {
+                            console.log('back in server', JSON.stringify(paymentAddress));
+                            payload.sendPaymentTo = paymentAddress;
+                            return h.response(payload).code(403).state(COOKIE_KEY, payload);
+                        }).catch((err) => {
+                            const msg = JSON.stringify(err);
+                            console.error('error creating address', msg);
+                            return h.response(msg).code(500);
+                        });
+                    }).catch((err) => {
+                        const msg = JSON.stringify(err);
+                        console.error('error creating account', msg);
+                        return h.response(msg).code(500);
+                    });
+                } else {
+                    // Account already exists - create the new address.
+                    mybcoin.createAddress(accountId).then((paymentAddress) => {
+                        console.log('back in server', JSON.stringify(paymentAddress));
+                        payload.sendPaymentTo = paymentAddress;
+                        return h.response(payload).code(403).state(COOKIE_KEY, payload);
+                    }).catch((err) => {
+                        const msg = JSON.stringify(err);
+                        console.error('error creating address', msg);
+                        return h.response(msg).code(500);
+                    });
+                }
             });
+
         } else {
             // Payment address is defined, check for sufficient balance at that address.
             mybcoin.hasBalance(payload.sendPaymentTo, amount).then((res) => {

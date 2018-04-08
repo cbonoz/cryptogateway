@@ -1,11 +1,11 @@
 const mybcoin = require('./bcoin/coin');
 
-
+const accountName = 'defasult';
 
 async function test() {
-    const accountName = "testdfdf";
     const receiveAddress = await mybcoin.httpWallet.createAddress(accountName);
-    console.log('receiveAddress', receiveAddress)
+    console.log('receiveAddress', receiveAddress);
+    return receiveAddress;
 }
 
-test().then((res) => console.log('res', res)).catch((err) => {console.error('err', err)})
+mybcoin.getAccount(accountName).then((res) => console.log('res', res)).catch((err) => {console.error('err', err)});
