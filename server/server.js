@@ -10,7 +10,7 @@ const server = Hapi.server({
     port: SERVER_PORT
 });
 
-server.ext('onPreResponse', corsHeaders)
+server.ext('onPreResponse', corsHeaders);
 
 const COOKIE_KEY = 'cgpayment';
 const ALLOWED_VIEWS = 0;
