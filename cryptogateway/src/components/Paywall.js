@@ -118,7 +118,7 @@ const Paywall = createReactClass({
 
                         <Button bsStyle="success" className="wallet-button" onClick={() => {
                             self.handleClose()
-                        }}>Go to Wallet</Button>
+                        }}>Authorize Payment of {self.props.amount}</Button>
 
                         <hr />
 

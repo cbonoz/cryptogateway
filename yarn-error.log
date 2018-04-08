@@ -1,0 +1,32 @@
+Arguments: 
+  /usr/local/Cellar/node/9.5.0/bin/node /usr/local/bin/yarn start
+
+PATH: 
+  /usr/local/sbin:/Users/cbuonocore/go/bin:/Users/cbuonocore/.yarn/bin:~/.local/bin:/usr/local/bin/python2:/Users/cbuonocore/bin:/usr/local/bin:/usr/local/sbin:/Users/cbuonocore/go/bin:/Users/cbuonocore/.yarn/bin:~/.local/bin:/usr/local/bin/python2:/Users/cbuonocore/bin:/usr/local/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/Library/TeX/texbin:/usr/local/go/bin:/Users/cbuonocore/Toast/git-repos/play1:/Users/cbuonocore/Library/Android/sdk/tools:/Users/cbuonocore/Library/Android/sdk/platform-tools:/Users/cbuonocore/Toast/git-repos/play1:/Users/cbuonocore/Library/Android/sdk/tools:/Users/cbuonocore/Library/Android/sdk/platform-tools:/Users/cbuonocore/anaconda3/bin:/Users/cbuonocore/.local/bin:/Users/cbuonocore/bin:/Users/cbuonocore/anaconda3/bin:/Users/cbuonocore/.local/bin:/Users/cbuonocore/bin
+
+Yarn version: 
+  1.5.1
+
+Node version: 
+  9.10.0
+
+Platform: 
+  darwin x64
+
+npm manifest: 
+  No manifest
+
+yarn manifest: 
+  No manifest
+
+Lockfile: 
+  No lockfile
+
+Trace: 
+  Error: Couldn't find a package.json file in "/Users/cbuonocore/personal/hackathon/cryptogateway"
+      at new MessageError (/usr/local/lib/node_modules/yarn/lib/cli.js:186:110)
+      at /usr/local/lib/node_modules/yarn/lib/cli.js:40048:15
+      at Generator.next (<anonymous>)
+      at step (/usr/local/lib/node_modules/yarn/lib/cli.js:98:30)
+      at /usr/local/lib/node_modules/yarn/lib/cli.js:109:13
+      at <anonymous>
