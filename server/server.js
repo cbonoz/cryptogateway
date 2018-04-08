@@ -13,12 +13,18 @@ const server = Hapi.server({
 
 const SESSION_KEY = 'cgpayment';
 
+const GCI = 'TODO';
+
 // ----------------------
 // Client-facing portion 
 // ----------------------
 
 // Session object structure:
 // {
+//  wallet: {
+//    "cosmosAddress": "STRING" // Cosmos adress of the user on the cosmos sidechain
+//    "mediaCreditAddress": "STRING" // Bitcoin address for the user to charge their credit to
+//  },
 //  publishers: {
 //   "Washington Post": { 
 //    address: "0xBADABADA"
@@ -52,7 +58,7 @@ function atob(s) {
     return '';
 }
 
-// Add our validate pay API route
+// Validate pay API call (bcoin-based)
 server.route({
     method: 'GET',
     path: '/validate-pay/{publisher}/{amount}',
@@ -133,6 +139,7 @@ server.route({
     }
 });
 
+// Return a list of bcoin payment requests and whether they were made
 server.route({
     method: 'GET',
     path: '/payments/list',
@@ -150,6 +157,85 @@ server.route({
         });
 
         return h.response(payments).code(200);
+    }
+});
+
+/// *** MediaCredit Loading API ***
+
+// *** Cosmos wallet ***
+
+const hasCosmosAddressInSession = (sessionData) => (sessionData && sessionData.wallet && sessionData.wallet.cosmosAddress);
+
+const MEDIA_CREDIT_ACCOUNT = "MediaCredit";
+
+
+// Show the MediaCredit balance and wallet info. Use this to get the bitcoin address to charge, and know your current balance
+server.route({
+    method: 'GET',
+    path: '/wallet-info',
+    handler: async function (request, h) {
+
+        const returnError = (type, err) => {
+          let msg = `Server - error ${type}: ${JSON.stringify(err)}`;
+          console.log(msg);
+          return h.response(createJson(msg)).code(500);
+        };
+
+        const sessionData = request.yar.get(SESSION_KEY);
+        if (!hasCosmosAddressInSession(sessionData)) {
+          // 1. Generate a new cosmos address
+          // TODO
+          let cosmosAddress = "TODO";
+
+          // 2. Generate bitcoin address for the user to charge bitcoin into
+          let bitcoinAddress =
+            await mybcoin.createAccount(MEDIA_CREDIT_ACCOUNT)
+              .then(() => createAddress(MEDIA_CREDIT_ACCOUNT))
+              .catch((err) => returnError("creating media credit bitcoin address", err));
+
+          sessionData.wallet = {
+            cosmosAddress: cosmosAddress,
+            mediaCreditAddress: bitcoinAddress
+          };
+
+          request.yar.set(SESSION_KEY, sessionData);
+          
+          return h.response({ balance: 0, mediaCreditAddress: bitcoinAddress }).code(200);
+        }
+
+        // We have a cosmos address - return balance (also return the bitcoin charge address in case the user wants to add more funds)
+
+        // TODO integrate with Cosmos code
+        return h.response({
+          mediaCreditAddress: sessionData.wallet.mediaCreditAddress,
+          balance: await cosmos.loadBalance(GCI, sessionData.wallet.cosmosAddress)
+        }).code(200);
+    }
+});
+
+// Performs a micro-payment to a publisher. Note that it's a POST request.
+server.route({
+    method: 'POST',
+    path: '/micro-pay/{publisher}/{amount}',
+    handler: async function (request, h) {
+        const sessionData = request.yar.get(SESSION_KEY);
+        if (!hasCosmosAddressInSession(sessionData)) {
+            return h.response("Unknown user").code(400);
+        }
+
+        const amount = request.params.amount;
+        if (!amount) {
+            return h.response(createJson("Invalid request, please specify amount")).code(400);
+        }
+
+        const publisher = request.params.publisher;
+        if (!publisher) {
+            return h.response(createJson("Invalid request, please specify publisher")).code(400);
+        }
+
+        // TODO integrate with Cosmos code
+        let success = await cosmos.pay(GCI, sessionData.cosmos.userAddress, publisher, amount);
+        return h.response({ success: success }).code((success) ? 200 : 400);
     }
 });
 
