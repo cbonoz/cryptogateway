@@ -10,15 +10,7 @@ const library = (function () {
     const db = low(adapter);
 
     db.defaults({accounts: []}).write();
-
     const OWNER_WALLET_ID = 'primaryId';
-    const OWNER_ACCOUNT = 'default';
-
-    const client = new Client({
-        network: 'testnet',
-        uri: 'http://localhost:18332',
-        apiKey: 'hunter3',
-    });
 
     const httpWallet = new Wallet({
         network: 'testnet',
@@ -26,6 +18,12 @@ const library = (function () {
         apiKey: 'hunter3',
         id: OWNER_WALLET_ID
     });
+
+    // const client = new Client({
+    //     network: 'testnet',
+    //     uri: 'http://localhost:18332',
+    //     apiKey: 'hunter3',
+    // });
 
     // {
     //     "wid": 1,
@@ -74,6 +72,7 @@ const library = (function () {
     return {
         createAddress: createAddress,
         hasBalance: hasBalance,
+        httpWallet: httpWallet
     }
 
 })();
