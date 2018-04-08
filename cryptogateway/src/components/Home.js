@@ -33,7 +33,7 @@ const Home = createReactClass({
                     <img src={gatewayLogo} className="centered header-logo"/>
 
                     <p className="header-text-h2">
-                        Crypto-powered Website Paywalls for <b>Everyone.</b>
+                        Crypto-powered Website <span className="neo-green">Paywalls</span> for <b>Everyone.</b>
                     </p>
                     <p className="header-text-h3">
                         <b>No</b> programming experience required.
