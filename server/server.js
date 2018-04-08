@@ -1,16 +1,14 @@
 'use strict';
 
 const Hapi = require('hapi');
-const corsHeaders = require('hapi-cors-headers');
 const mybcoin = require('./bcoin/coin');
 const SERVER_PORT = 3001;
 
 const server = Hapi.server({
     host: 'localhost',
-    port: SERVER_PORT
+    port: SERVER_PORT,
+    routes: {cors: {origin: ['*']}}
 });
-
-server.ext('onPreResponse', corsHeaders);
 
 const COOKIE_KEY = 'cgpayment';
 const ALLOWED_VIEWS = 0;

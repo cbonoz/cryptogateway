@@ -25,8 +25,6 @@ const Paywall = createReactClass({
             'Access-Control-Allow-Origin':'*',
         }}).then(function (response) {
             console.log('response', response);
-
-            return response.json();
         }).catch((error) => {
             console.log('error', error)
         })
@@ -48,7 +46,7 @@ const Paywall = createReactClass({
         }).catch((error) => {
             console.log('error', error)
         }).then(function (res) {
-            console.log('validate success', res);
+            console.log('validate success', res.message);
             // Ok to proceed (remove the blur).
             self.handleClose();
         }).catch((err) => {
