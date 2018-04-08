@@ -33,6 +33,10 @@ const SESSION_KEY = 'cgpayment';
 //  }
 // }
 
+function createJson(msg) {
+    return {message: msg};
+}
+
 // Add our validate pay API route
 server.route({
     method: 'GET',
@@ -40,18 +44,19 @@ server.route({
     handler: async function (request, h) {
 
         // *** Parameter validation ***
+        console.log('validate-pay');
 
         // Receive required amount as a parameter
         const amount = request.params.amount;
         if (!amount) {
-            return h.response("Invalid request, please specify amount").code(400);
+            return h.response(createJson("Invalid request, please specify amount")).code(400);
         }
 
         // Receive publisher name
-        let publisher = request.params.publisher;
-        publisher = publisher.replace(/./g, "");
+        const publisher = request.params.publisher;
+        console.log('publisher', publisher);
         if (!publisher) {
-            return h.response("Invalid  request, please specify publisher").code(400);
+            return h.response(createJson("Invalid request, please specify publisher")).code(400);
         }
 
         let sessionData = request.yar.get(SESSION_KEY);
@@ -70,10 +75,10 @@ server.route({
         const returnError = (type, err) => {
             let msg = `Server - error ${type} for publisher ${publisher}: ${JSON.stringify(err)}`;
             console.log(msg);
-            return h.response(msg).code(500);
+            return h.response(createJson(msg)).code(500);
         };
 
-        const createAddress = (accountId, firstVisit) => {
+        const createAddress = (accountId) => {
           return mybcoin.createAddress(accountId).then((paymentAddress) => {
             console.log('Server - generated payment address: ', JSON.stringify(paymentAddress));
             sessionData.publishers[publisher] = {
@@ -82,7 +87,7 @@ server.route({
               requestedAt: Date.now()
             };
             request.yar.set(SESSION_KEY, sessionData);
-            return h.response({ sendPaymentTo: paymentAddress, firstVisit: firstVisit }).code(403);
+            return h.response({ sendPaymentTo: paymentAddress, firstVisit: true }).code(403);
           }).catch((err) => returnError("creating address", err));
         };
 
@@ -95,22 +100,22 @@ server.route({
                 if (!res) {
                     // Account does not exist - create it first, then the address
                     return mybcoin.createAccount(accountId)
-                      .then(() => createAddress(accountId, true))
+                      .then(() => createAddress(accountId))
                       .catch((err) => returnError("creating account", err));
                 } else {
                     // Account already exists - create the new address.
-                    return createAddress(accountId, true);
+                    return createAddress(accountId);
                 }
-            }).catch((err) => returnError("error getting account", err));
+            }).catch((err) => returnError("getting account", err));
         } else {
             // Entry exists and hence payment address is defined, check for sufficient balance at that address.
             return mybcoin.hasBalance(thisPublisherEntry.address, thisPublisherEntry.amount).then((res) => {
                 if (res) {
-                    return h.response("Authorized").code(200);
+                    return h.response(createJson("Authorized")).code(200);
                 } else {
                     return h.response({ sendPaymentTo: thisPublisherEntry.address, firstVisit: false}).code(403);
                 }
-            }).catch((err) => returnError("error checking balance", err));
+            }).catch((err) => returnError("checking balance", err));
         }
     }
 });
