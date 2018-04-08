@@ -4,7 +4,7 @@ body {
     font-family: sans-serif;
 }
 
-.navbar-default  {
+.navbar-default {
     /*background-image: none !important;*/
     background: none !important;
 }
@@ -84,7 +84,7 @@ body {
     font-size: 20px;
 }
 
-.about-page .files-page{
+.about-page .files-page {
     padding: 20px;
 }
 
@@ -102,7 +102,7 @@ body {
 
 }
 
-.navbar-nav>li>a {
+.navbar-nav > li > a {
     /*border-bottom: 2px solid blue;*/
     background: transparent !important;
     /*color: white !important;*/
@@ -128,8 +128,8 @@ body {
     min-height: 100vh;
     height: 100%;
     /*background: linear-gradient(90deg, #efd5ff 0%, #515ada 100%);*/
-    background: rgb(174,195,238);
-    background: linear-gradient(276deg, rgba(174,195,238,1) 0%, rgba(68,59,129,0.2903536414565826) 22%);
+    background: rgb(174, 195, 238);
+    background: linear-gradient(276deg, rgba(174, 195, 238, 1) 0%, rgba(68, 59, 129, 0.2903536414565826) 22%);
     /*background: linear-gradient(90deg, #e3ffe7 0%, #d9e7ff 100%);*/
 }
 
@@ -144,6 +144,15 @@ body {
     cursor: pointer;
 }
 
+.article-section, .about-section {
+    max-width: 800px;
+}
+
+.article-post {
+    margin: 25px;
+    border-bottom: 1px dotted black;
+}
+
 .access-text {
     padding: 20px;
     color: green;
@@ -151,7 +160,6 @@ body {
 
 .file-block:hover {
     background: #cde4ee;
-
 }
 
 .cosmos-logo {
@@ -176,6 +184,14 @@ body {
 
 .modal-body {
     font-size: 14px;
+}
+
+.small-text {
+    font-size: 12px;
+}
+
+.italics {
+    font-style: italic;
 }
 
 .neo-green {

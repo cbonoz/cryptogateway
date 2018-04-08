@@ -4,21 +4,15 @@
 
 import React from 'react';
 import createReactClass from 'create-react-class';
-import PropTypes from 'prop-types';
 import {Stage, Layer, Rect, Text} from "react-konva";
 import * as Konva from "konva";
 
-
 const ANIMATION_INTERVAL = 15000;
-const PARTICLE_SIZE = 5;
+const PARTICLE_SIZE = 6;
 const PARTICLE_INTERVAL = 600;
 const PARTICLE_SPEED = 3;
 
 class ColoredRect extends React.Component {
-    //
-    // state = {
-    //     color: 'green',
-    // };
 
     componentWillMount() {
         this.setState({
@@ -70,10 +64,7 @@ const WallAnimation = createReactClass({
             return [p[0] + PARTICLE_SPEED, p[1]]
         });
         self.setState({particles: newParticles});
-        // console.log('particles: ', newParticles);
-
         self.updateWallHeight();
-
     },
 
     resetAnimation() {

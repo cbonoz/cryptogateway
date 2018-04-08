@@ -51,7 +51,7 @@ const Home = createReactClass({
                     </Col>
                     <Col xs={12} md={7}>
                         {/*TODO: readd*/}
-                        {/*<WallAnimation/>*/}
+                        <WallAnimation/>
                     </Col>
                     <Col xs={12} md={3}>
                         <img src={businessLogo} className="business-logo"/>
@@ -87,7 +87,7 @@ const Home = createReactClass({
                 </Grid>
 
                 <Modal show={this.state.showModal} onHide={this.handleClose}>
-                    <Modal.Header can>
+                    <Modal.Header closeButton>
                         <Modal.Title><b>Create a new Cryptogateway account</b></Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
