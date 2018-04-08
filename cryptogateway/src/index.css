@@ -144,6 +144,15 @@ body {
     cursor: pointer;
 }
 
+.article-section, .about-section {
+    max-width: 800px;
+}
+
+.article-post {
+    margin: 25px;
+    border-bottom: 1px dotted black ;
+}
+
 .access-text {
     padding: 20px;
     color: green;
@@ -151,7 +160,6 @@ body {
 
 .file-block:hover {
     background: #cde4ee;
-
 }
 
 .cosmos-logo {
