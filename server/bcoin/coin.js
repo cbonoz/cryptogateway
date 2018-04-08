@@ -58,7 +58,7 @@ const library = (function () {
         transactions.map((t) => {
             total += t['value'];
         });
-        console.log('balance', total, history, requiredBalance, accountId);
+        console.log('balance', total, requiredBalance, history, accountId);
         requiredBalance = parseFloat(requiredBalance);
         return total >= requiredBalance;
     }

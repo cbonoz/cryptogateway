@@ -4,7 +4,7 @@ import About from './components/About';
 import Footer from './components/Footer';
 import Paywall from './components/Paywall';
 import Articles from "./components/Articles";
-import {Navbar, NavItem, NavDropdown, Nav, MenuItem} from 'react-bootstrap';
+import {Navbar, NavItem, Nav} from 'react-bootstrap';
 
 import {
     BrowserRouter as Router,
@@ -20,13 +20,15 @@ class App extends Component {
 
     render() {
         const self = this;
-
         return (
             <div className="App">
-                <Paywall amount={.0001}
+                <Paywall
+                    disabled={false}
+                    onClick={false}
+                    amount={0.0}
                          amountUnits={"Bitcoin"}
-                         customerDomain="www.cryptogateway.com"
-                         excludedUrls={["/"]}>
+                         domain="www.cryptogateway.com"
+                         excludedUrls={["/", "/articles"]}>
                     <Navbar collapseOnSelect>
                         <Navbar.Header>
                             <Navbar.Brand>

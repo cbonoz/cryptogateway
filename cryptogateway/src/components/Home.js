@@ -87,7 +87,7 @@ const Home = createReactClass({
                 </Grid>
 
                 <Modal show={this.state.showModal} onHide={this.handleClose}>
-                    <Modal.Header closeButton>
+                    <Modal.Header can>
                         <Modal.Title><b>Create a new Cryptogateway account</b></Modal.Title>
                     </Modal.Header>
                     <Modal.Body>

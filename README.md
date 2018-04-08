@@ -5,11 +5,27 @@ Crypto-powered Website Paywalls
 
 Prototype Built for the the Crypto 4 Your Thoughts hackathon.
 
+Pitch Deck here:
+<a target="_blank" href="https://docs.google.com/presentation/d/1qWq337IARBoGINA7AzUMNWT9WyKPOtQ9Rwk_8fwi7qA/edit?usp=sharing">Slides</a>
+
 ### Concept
 
 Cryptogateway is a free website plugin which wraps any of your desired content around a custom-priced cryptocurrency paywall.
 
 For each customer, an account will automatically be generated which will store any funds sent to you by your website visitors. Each customer will be mapped to a unique address which is used to verify whether they have paid for website access or not. Once the user has paid, he or she will automatically be granted access to the content.
+
+### Plugin Component (React)
+
+<pre>
+     <Paywall
+                    disabled={false} // defaults to false (enabled)
+                    onClick={false} // defaults to false (auto blocks)
+                    amount={.0001} // amount to pay
+                         amountUnits={"Bitcoin"} // units of payment
+                         domain="www.cryptogateway.com" // domain of website
+                         excludedUrls={["/"]} // defaults to [], will disabled on these website paths.
+                         >
+ </pre>
 
 Steps for install:
 <ol>

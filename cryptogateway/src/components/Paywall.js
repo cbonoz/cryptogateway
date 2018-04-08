@@ -9,16 +9,23 @@ const Paywall = createReactClass({
 
     componentWillMount() {
         this.setState({
+            paymentReceived: false,
             showModal: false,
-            blur: true,
+            blur: 0,
             sendPaymentTo: null,
         });
 
+        const onClick = this.props.onClick === true;
+        const disabled = this.props.disabled === true;
         const excludedUrls = this.props.excludedUrls || [];
         console.log(window.location.pathname, excludedUrls);
-        if (!excludedUrls.includes(window.location.pathname)) {
-            this.setState({authInterval: setInterval(this.checkAuth, this.props.authInterval || 100000)});
-            this.checkAuth();
+        if (!disabled && !excludedUrls.includes(window.location.pathname)) {
+            if (onClick) {
+                this.setState({blur: this.props.blur || DEFAULT_BLUR});
+            } else {
+                this.setState({authInterval: setInterval(this.checkAuth, this.props.authInterval || 100000)});
+                this.checkAuth();
+            }
         }
     },
 
@@ -32,10 +39,8 @@ const Paywall = createReactClass({
     checkAuth() {
         const self = this;
         // units in satoshi.
-        const amount = self.props.amount || 500;
-        let publisher = self.props.customerDomain || 'www.example.com';
-        publisher = publisher.replace(/\./g, "");
-        const amountUnits = self.props.amountUnits || "Satoshi";
+        const amount = self.props.amount || 0;
+        const publisher = self.props.domain.replace(/[\.\/]/g, "_");
         const url = `${BASE_URL}/validate-pay/${publisher}/${amount}`;
         console.log('checkAuth', url);
 
@@ -62,18 +67,40 @@ const Paywall = createReactClass({
                     case 403:
                         // Error from payment server, show the dialog.
                         const sendPaymentTo = data['sendPaymentTo'];
-                        self.setState({sendPaymentTo: sendPaymentTo});
-                        setTimeout(self.handleShow, 1000);
+                        self.setPaymentNeeded(sendPaymentTo);
                         break;
                     default:
-                        // Close the dialog.
-                        self.handleClose();
+                        self.receivedPayment();
                         break;
                 }
             }).catch((err) => {
-            console.error('validate failure', JSON.stringify(err));
+            console.error('validate failure, allowing user through', JSON.stringify(err));
             self.handleClose();
         });
+    },
+
+    // Show payment required.
+    setPaymentNeeded(address) {
+        const self = this;
+        self.setState({sendPaymentTo: address});
+        setTimeout(self.handleShow, 1000);
+    },
+
+    // Close the dialog.
+    receivedPayment() {
+        const self = this;
+        if (self.state.blur > 0) {
+            // Show payment received text.
+            self.setState({paymentReceived: true});
+        }
+        setTimeout(self.handleClose, 1000);
+    },
+
+    checkAuthManual() {
+        console.log('checkAuthManual');
+        if (this.props.onClick === true) {
+            this.checkAuth();
+        }
     },
 
     handleClose() {
@@ -81,23 +108,23 @@ const Paywall = createReactClass({
     },
 
     handleShow() {
-        this.setState({blur: this.props.blur || DEFAULT_BLUR, showModal: true})
+        this.setState({blur: this.props.blur || DEFAULT_BLUR, showModal: true, paymentReceived: false})
     },
 
     render() {
         const self = this;
         const popover = (
-            <Popover id="modal-popover" title="popover">
+            <Popover id="modal-popover" title="Payment Address">
                 Get automatic access once payment/transaction confirmed.
             </Popover>
         );
-        const tooltip = <Tooltip id="modal-tooltip">wow.</Tooltip>;
 
         const blur = this.state.blur;
 
         return (
             <div>
-                <div style={{WebkitFilter: `blur(${blur}px) saturate(2)`}}>
+                <div style={{WebkitFilter: `blur(${blur}px) saturate(2)`, cursor: 'pointer'}}
+                     onClick={() => self.checkAuthManual()}>
                     {this.props.children}
                 </div>
 
@@ -114,18 +141,28 @@ const Paywall = createReactClass({
 
                         <hr/>
 
-                        <p>Send <b>{self.props.amount}</b> {self.props.amountUnits} to address:</p>
+                        {self.props.amount > 0 && <div>
+                            <p>Send <b>{self.props.amount}</b> {self.props.amountUnits} to address:</p>
+                            <OverlayTrigger overlay={popover}>
+                                <h3 className="payment-address"><b>{self.state.sendPaymentTo}</b></h3>
+                            </OverlayTrigger>
+                            <p>to continue reading.</p>
+                        </div>}
 
-                        <OverlayTrigger overlay={popover}>
-                            <h3><b>{self.state.sendPaymentTo}</b></h3>
-                        </OverlayTrigger>
+                        {self.props.amount == 0 && <p>This page is free to view! Click authorize to continue</p>}
 
-                        <p>to continue reading.</p>
+                        <Button
+                            bsStyle="success"
+                            className="wallet-button"
+                            onClick={() => {
+                                self.receivedPayment()
+                            }}>
+                            Authorize Payment of {self.props.amount} {self.props.amountUnits}
+                        </Button>
+                        <p className="small-text italics">access: {self.props.domain}</p>
 
-                        <Button bsStyle="success" className="wallet-button" onClick={() => {
-                            self.handleClose()
-                        }}>Authorize Payment of {self.props.amount} {self.props.amountUnits}</Button>
-
+                        {this.state.paymentReceived &&
+                        <p className="neo-green">Thanks for your Payment! One moment...</p>}
                     </Modal.Body>
                     <Modal.Footer>
                         <div>

@@ -12,7 +12,7 @@ const About = createReactClass({
             <div className="centered about-page">
 
                 <div className="about-section centered">
-                    <h1>How it Works</h1>
+                    <h1>Or Protect your entire Website</h1>
 
                     <p>
                         CryptoGateway is a freewebsite plugin that allows you to wrap your sensitive website content around a
