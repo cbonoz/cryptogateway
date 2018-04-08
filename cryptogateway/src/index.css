@@ -11,6 +11,8 @@ body {
 
 .business-logo {
     margin-top: 50px;
+    margin-right: 20px;
+    padding-right: 25px;
 }
 
 .wall-animation {
@@ -57,7 +59,8 @@ body {
 }
 
 .create-button {
-    margin: 15px;
+    margin-top: 50px;
+    margin-bottom: 25px;
 }
 
 .form-control {
@@ -112,6 +115,11 @@ body {
 
 .header-bar-logo {
     height: 50px;
+    /*margin-bottom: 10px;*/
+}
+
+.coin-row {
+    margin-top: 40px;
 }
 
 /*Custom CSS files below*/

@@ -5,6 +5,9 @@ import {Button, Grid, Row, Col} from 'react-bootstrap';
 
 import gatewayLogo from '../assets/cryptogateway.png';
 import businessLogo from '../assets/your_business.png';
+import bcoinLogo from '../assets/bcoin_diamond.png';
+import cosmosLogo from '../assets/cosmos_logo.png';
+import bitcoinLogo from '../assets/bitcoin.png';
 
 import WallAnimation from "./WallAnimation";
 
@@ -40,23 +43,41 @@ const Home = createReactClass({
                 <Row className="show-grid wall-animation">
                     <Col xs={0} md={1}>
                     </Col>
-                    <Col xs={12} md={8}>
+                    <Col xs={12} md={7}>
                         {/*TODO: readd*/}
-                        {/*<WallAnimation/>*/}
+                        <WallAnimation/>
                     </Col>
-                    <Col xs={12} md={2}>
+                    <Col xs={12} md={3}>
                         <img src={businessLogo} className="business-logo"/>
+                        {/*<p>Your Business Website</p>*/}
                     </Col>
                     <Col xs={0} md={1}>
                     </Col>
                 </Row>
 
-                <p>
-                    <Button bsStyle="primary" className="create-button" onClick={() => self.getAccount()}>Download the plugin</Button>
-                </p>
+                <div className="centered">
+                    <Button bsStyle="primary" className="create-button" onClick={() => self.getAccount()}>Download the
+                        plugin</Button>
+                </div>
 
+                <hr/>
 
                 <Grid>
+                    <Row className="show-grid coin-row">
+                        <Col xs={1} md={2}></Col>
+                        <Col xs={10} md={2}>
+                            <img className="img-responsive" src={bitcoinLogo}/>
+                        </Col>
+                        <Col xs={0} md={1}></Col>
+                        <Col xs={10} md={2}>
+                            <img className="img-responsive" src={bcoinLogo}/>
+                        </Col>
+                        <Col xs={0} md={1}></Col>
+                        <Col xs={10} md={2}>
+                            <img className="img-responsive" src={cosmosLogo}/>
+                        </Col>
+                        <Col xs={1} md={2}></Col>
+                    </Row>
                     <Row className="show-grid">
                         <Col xs={12} md={5}>
                             {/*Column 1 content*/}
