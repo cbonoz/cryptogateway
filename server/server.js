@@ -78,7 +78,7 @@ server.route({
             return h.response(createJson(msg)).code(500);
         };
 
-        const createAddress = (accountId, firstVisit) => {
+        const createAddress = (accountId) => {
           return mybcoin.createAddress(accountId).then((paymentAddress) => {
             console.log('Server - generated payment address: ', JSON.stringify(paymentAddress));
             sessionData.publishers[publisher] = {
@@ -87,7 +87,7 @@ server.route({
               requestedAt: Date.now()
             };
             request.yar.set(SESSION_KEY, sessionData);
-            return h.response({ sendPaymentTo: paymentAddress, firstVisit: firstVisit }).code(403);
+            return h.response({ sendPaymentTo: paymentAddress, firstVisit: true }).code(403);
           }).catch((err) => returnError("creating address", err));
         };
 
@@ -100,13 +100,13 @@ server.route({
                 if (!res) {
                     // Account does not exist - create it first, then the address
                     return mybcoin.createAccount(accountId)
-                      .then(() => createAddress(accountId, true))
+                      .then(() => createAddress(accountId))
                       .catch((err) => returnError("creating account", err));
                 } else {
                     // Account already exists - create the new address.
-                    return createAddress(accountId, true);
+                    return createAddress(accountId);
                 }
-            }).catch((err) => returnError("error getting account", err));
+            }).catch((err) => returnError("getting account", err));
         } else {
             // Entry exists and hence payment address is defined, check for sufficient balance at that address.
             return mybcoin.hasBalance(thisPublisherEntry.address, thisPublisherEntry.amount).then((res) => {
@@ -115,7 +115,7 @@ server.route({
                 } else {
                     return h.response({ sendPaymentTo: thisPublisherEntry.address, firstVisit: false}).code(403);
                 }
-            }).catch((err) => returnError("error checking balance", err));
+            }).catch((err) => returnError("checking balance", err));
         }
     }
 });
