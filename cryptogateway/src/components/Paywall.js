@@ -20,14 +20,6 @@ const Paywall = createReactClass({
             this.setState({authInterval: setInterval(this.checkAuth, this.props.authInterval || 100000)});
             this.checkAuth();
         }
-
-        fetch(`${BASE_URL}/hello`, {header: {
-            'Access-Control-Allow-Origin':'*',
-        }}).then(function (response) {
-            console.log('response', response);
-        }).catch((error) => {
-            console.log('error', error)
-        })
     },
 
     checkAuth() {
