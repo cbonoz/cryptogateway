@@ -27,7 +27,8 @@ class App extends Component {
 
         return (
             <div className="App">
-                <Paywall amount={1.0} amountUnits={"Bitcoin"} excludedUrls={["/"]}>
+                <Paywall amount={.0001} amountUnits={"Bitcoin"}>
+                    {/*excludedUrls={["/"]}>*/}
                     <Navbar collapseOnSelect>
                         <Navbar.Header>
                             <Navbar.Brand>

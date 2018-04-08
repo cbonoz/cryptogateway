@@ -1,0 +1,44 @@
+{
+  "network": "testnet",
+  "wid": 7,
+  "id": "primaryId",
+  "initialized": true,
+  "watchOnly": true,
+  "accountDepth": 1,
+  "token": "8af30154aae94a24e80304c08e126b14a9f5fa216bccc952141fbedcc901fac5",
+  "tokenDepth": 0,
+  "state": {
+    "tx": 0,
+    "coin": 0,
+    "unconfirmed": 0,
+    "confirmed": 0
+  },
+  "master": {
+    "encrypted": true,
+    "until": 1523148460,
+    "iv": "2efddf388f0497afa8ca2ca7bd5d5800",
+    "algorithm": "pbkdf2",
+    "N": 50000,
+    "r": 0,
+    "p": 0
+  },
+  "account": {
+    "name": "default",
+    "initialized": true,
+    "witness": false,
+    "watchOnly": true,
+    "type": "pubkeyhash",
+    "m": 1,
+    "n": 1,
+    "accountIndex": 0,
+    "receiveDepth": 1,
+    "changeDepth": 1,
+    "nestedDepth": 0,
+    "lookahead": 10,
+    "receiveAddress": "muYkrSDbD8UhyWBMXxXf99EKWn22YqmwyF",
+    "nestedAddress": null,
+    "changeAddress": "mwveV7A6svE5EGGSduZmMKTwcbE775NVFt",
+    "accountKey": "tpubDDh2XgSds1vBbeVgye88gsGQeCityoywRndtyrXcmvWqCgsFUyUKwzeDv8HiJhu9fC8jRAFMqxr4jj8eRTNTycmMao5wmsAScVf4jSMdPYZ",
+    "keys": []
+  }
+}
