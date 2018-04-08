@@ -26,9 +26,10 @@ const Paywall = createReactClass({
         const self = this;
         // units in satoshi.
         const amount = self.props.amount || 500;
-        const domain = self.props.customerDomain || 'www.example.com'
+        let publisher = self.props.customerDomain || 'www.example.com';
+        publisher = publisher.replace(/\./g, "");
         const amountUnits = self.props.amountUnits || "Satoshi";
-        const url = `${BASE_URL}/validate-pay/${domain}/${amount}`;
+        const url = `${BASE_URL}/validate-pay/${publisher}/${amount}`;
         console.log('checkAuth', url);
 
         fetch(url, {header: {
