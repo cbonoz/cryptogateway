@@ -17,13 +17,13 @@ For each customer, an account will automatically be generated which will store a
 ### Plugin Component (React)
 
 <pre>
-     <Paywall
+     Paywall
                     disabled={false} // defaults to false (enabled)
-                    onClick={false} // defaults to false (auto blocks)
-                    amount={.0001} // amount to pay
-                         amountUnits={"Bitcoin"} // units of payment
+                    onClick={false} // defaults to false (auto blocks if false)
+                    amount={.0001} // amount to pay for access
+                         amountUnits={"Bitcoin"} // unit of payment
                          domain="www.cryptogateway.com" // domain of website
-                         excludedUrls={["/"]} // defaults to [], will disabled on these website paths.
+                         excludedUrls={["/"]} // will disable paywall on these url paths.
                          >
  </pre>
 
