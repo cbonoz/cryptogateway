@@ -43,7 +43,7 @@ const library = (function () {
     async function hasBalance(address, requiredBalance) {
         const receiveAddress = db.get('accounts').find({address: address}).value();
         const response = httpWallet.getBalance(receiveAddress['name']);
-        console.log(response);
+        // console.log(response);
         const currentBalance = response['unconfirmed']; // get the unconfirmed balance (to include pending).
         return currentBalance >= requiredBalance;
     }
@@ -78,7 +78,7 @@ const library = (function () {
         };
         const account = await httpWallet.createAccount(accountId, options);
         db.get('accounts').push(account).write();
-        console.log(account);
+        // console.log(account);
         return account['name'];
     }
 
@@ -105,7 +105,7 @@ const library = (function () {
     // }
     async function getAccount(accountId) {
         const accountInfo = await client.getAccount(OWNER_WALLET_ID, accountId);
-        console.log(accountInfo);
+        // console.log(accountInfo);
         return accountInfo;
     }
 
@@ -129,8 +129,8 @@ const library = (function () {
         const receiveAddress = await httpWallet.createAddress(accountId);
         // Add a new live account to the local db.k
         db.get('addresses').push(receiveAddress).write();
-        const text = JSON.stringify(receiveAddress);
-        console.log('receiveAddress', accountId, text);
+        // const text = JSON.stringify(receiveAddress);
+        console.log('receiveAddress', accountId);
         return receiveAddress['address'];
     }
 

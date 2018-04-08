@@ -46,7 +46,7 @@ class App extends Component {
                                     Articles
                                 </NavItem>
                                 <NavItem eventKey={3} href="/about">
-                                    About Us
+                                    How it Works
                                 </NavItem>
                             </Nav>
                         </Navbar.Collapse>

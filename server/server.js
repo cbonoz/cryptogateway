@@ -38,6 +38,20 @@ function createJson(msg) {
     return {message: msg};
 }
 
+function btoa(s) {
+    if (s) {
+        return Buffer.from(s).toString('base64');
+    }
+    return '';
+}
+
+function atob(s) {
+    if (s) {
+        return Buffer.from(s, 'base64').toString();
+    }
+    return '';
+}
+
 // Add our validate pay API route
 server.route({
     method: 'GET',
