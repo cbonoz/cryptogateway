@@ -8,7 +8,7 @@ Prototype Built for the the Crypto 4 Your Thoughts hackathon.
 Pitch Deck here:
 <a target="_blank" href="https://docs.google.com/presentation/d/1qWq337IARBoGINA7AzUMNWT9WyKPOtQ9Rwk_8fwi7qA/edit?usp=sharing">Slides</a>
 
-*Please see the above pitch deck for full spec, roadmap and system architecture.*
+**This README focuses on the prototype. Please see the <a target="_blank" href="https://docs.google.com/presentation/d/1qWq337IARBoGINA7AzUMNWT9WyKPOtQ9Rwk_8fwi7qA/edit?usp=sharing">pitch deck</a> for full spec and system architecture.**
 
 ### Concept
 
