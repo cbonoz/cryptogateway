@@ -99,6 +99,7 @@ const Paywall = createReactClass({
             // Show payment received text.
             self.setState({paymentReceived: true});
         }
+        clearInterval(self.state.authInterval);
         setTimeout(self.handleClose, 1000);
     },
 
