@@ -1,7 +1,7 @@
 Cryptogateway
 ---
 
-Crypto-powered Website Paywalls
+Crypto-powered Website Paywalls, powered by Cosmos and Bcoin.
 
 Prototype Built for the the Crypto 4 Your Thoughts hackathon.
 
